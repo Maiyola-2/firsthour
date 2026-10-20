@@ -1,0 +1,579 @@
+{
+  "meta": {
+    "version": "0.1",
+    "status": "DRAFT - verify every procedure and contact against official sources (docs/sources.md) before real use"
+  },
+  "disclaimer": {
+    "en": "FirstHour gives general guidance, not legal or financial advice. In an emergency, contact your bank, mobile network or the police directly.",
+    "sw": "FirstHour hutoa mwongozo wa jumla, si ushauri wa kisheria au kifedha. Wakati wa dharura, wasiliana moja kwa moja na benki yako, kampuni ya simu au polisi."
+  },
+  "cases": {
+    "bank_agent_call": {
+      "title": {
+        "en": "Fake bank agent call",
+        "sw": "Simu ya wakala feki wa benki"
+      },
+      "description": {
+        "en": "Someone called pretending to be from your bank and asked for your details.",
+        "sw": "Mtu alikupigia simu akijifanya kuwa wa benki yako na kuomba taarifa zako."
+      },
+      "start": "start",
+      "nodes": {
+        "start": {
+          "type": "question",
+          "text": {
+            "en": "Has any money already left your account?",
+            "sw": "Je, pesa yoyote imeshatoka kwenye akaunti yako?"
+          },
+          "options": [
+            {
+              "label": { "en": "Yes, money is missing", "sw": "Ndiyo, pesa zimepotea" },
+              "next": "plan_money_lost"
+            },
+            {
+              "label": { "en": "No, or I am not sure", "sw": "Hapana, au sina uhakika" },
+              "next": "q_shared"
+            }
+          ]
+        },
+        "q_shared": {
+          "type": "question",
+          "text": {
+            "en": "What did you share or do during the call?",
+            "sw": "Ulishiriki nini au ulifanya nini wakati wa simu hiyo?"
+          },
+          "options": [
+            {
+              "label": {
+                "en": "I shared card or account details, a PIN, a password or an OTP code",
+                "sw": "Nilitoa maelezo ya kadi au akaunti, PIN, nenosiri au msimbo wa OTP"
+              },
+              "next": "plan_details_shared"
+            },
+            {
+              "label": {
+                "en": "I installed an app or gave remote access to my phone",
+                "sw": "Nilipakua programu au nilitoa ufikiaji wa mbali wa simu yangu"
+              },
+              "next": "plan_remote_access"
+            },
+            {
+              "label": {
+                "en": "I only talked and shared nothing",
+                "sw": "Niliongea tu na sikutoa chochote"
+              },
+              "next": "plan_nothing_shared"
+            }
+          ]
+        },
+        "plan_money_lost": {
+          "type": "plan",
+          "urgency": "critical",
+          "title": {
+            "en": "Act now: money has left your account",
+            "sw": "Chukua hatua sasa: pesa zimetoka kwenye akaunti yako"
+          },
+          "steps": [
+            {
+              "en": "Call your bank right now using the official number on your card or on the bank's official website. Do not call any number the caller gave you.",
+              "sw": "Piga simu benki yako sasa hivi kwa nambari rasmi iliyo kwenye kadi yako au tovuti rasmi ya benki. Usipige nambari yoyote uliyopewa na aliyekupigia."
+            },
+            {
+              "en": "Tell them the transactions were not authorised by you. Ask them to block your card and online banking, and to try to stop or recall the transfers.",
+              "sw": "Waambie kuwa miamala hiyo haikuidhinishwa na wewe. Waombe wazuie kadi yako na huduma za benki mtandaoni, na wajaribu kusimamisha au kurejesha uhamisho huo."
+            },
+            {
+              "en": "Change your card PIN, online banking password and mobile banking PIN. Use a different phone if you think yours may be compromised.",
+              "sw": "Badilisha PIN ya kadi yako, nenosiri la benki mtandaoni na PIN ya benki kwa simu. Tumia simu nyingine ikiwa unashuku yako imedukuliwa."
+            },
+            {
+              "en": "Save evidence before it is deleted: your call log, the caller's number, bank alerts and your statement.",
+              "sw": "Hifadhi ushahidi kabla haujafutwa: orodha ya simu ulizopokea, nambari ya aliyepiga, ujumbe wa benki na taarifa ya akaunti yako."
+            },
+            {
+              "en": "Ask the bank for a reference number for your report and write it down.",
+              "sw": "Omba benki nambari ya kumbukumbu ya ripoti yako na uiandike."
+            },
+            {
+              "en": "Report to the police or the DCI cybercrime unit and ask for an OB or reference number.",
+              "sw": "Ripoti kwa polisi au kitengo cha uhalifu wa mtandaoni cha DCI na uombe nambari ya OB au ya kumbukumbu."
+            }
+          ],
+          "report_to": [
+            { "en": "Your bank's fraud desk", "sw": "Idara ya udanganyifu ya benki yako" },
+            {
+              "en": "DCI cybercrime unit or the nearest police station",
+              "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
+            }
+          ],
+          "evidence": [
+            { "en": "Caller's phone number and time of the call", "sw": "Nambari ya aliyepiga na muda wa simu" },
+            { "en": "Screenshots of bank alerts and statements", "sw": "Picha za skrini za ujumbe wa benki na taarifa ya akaunti" },
+            { "en": "Transaction IDs, amounts and dates", "sw": "Nambari za miamala, kiasi na tarehe" },
+            { "en": "The bank's reference number", "sw": "Nambari ya kumbukumbu ya benki" }
+          ]
+        },
+        "plan_details_shared": {
+          "type": "plan",
+          "urgency": "high",
+          "title": {
+            "en": "Secure your account before money is taken",
+            "sw": "Linda akaunti yako kabla pesa hazijaibwa"
+          },
+          "steps": [
+            {
+              "en": "Call your bank now on the official number from your card or the bank's website and tell them you shared your details with a fake agent.",
+              "sw": "Piga simu benki yako sasa kwa nambari rasmi kutoka kwenye kadi yako au tovuti ya benki na uwaambie ulitoa taarifa zako kwa wakala feki."
+            },
+            {
+              "en": "Ask them to block or replace your card and reset your online and mobile banking access.",
+              "sw": "Waombe wazuie au wabadilishe kadi yako na kuweka upya huduma zako za benki mtandaoni na kwa simu."
+            },
+            {
+              "en": "Change your PINs and passwords. If you reuse a password anywhere else, change it there too.",
+              "sw": "Badilisha PIN na nenosiri zako. Ikiwa unatumia nenosiri hilo hilo mahali pengine, libadilishe pia."
+            },
+            {
+              "en": "Turn on transaction alerts and check your statement for transactions you do not recognise.",
+              "sw": "Washa arifa za miamala na uangalie taarifa ya akaunti yako kama kuna miamala usiyoitambua."
+            },
+            {
+              "en": "Never share an OTP, PIN or password with anyone. A real bank will never ask for them.",
+              "sw": "Usimpe mtu yeyote msimbo wa OTP, PIN au nenosiri. Benki halisi haitawahi kuviomba."
+            },
+            {
+              "en": "Report the caller's number to your bank and to the police or DCI.",
+              "sw": "Ripoti nambari ya aliyepiga kwa benki yako na kwa polisi au DCI."
+            }
+          ],
+          "report_to": [
+            { "en": "Your bank's fraud desk", "sw": "Idara ya udanganyifu ya benki yako" },
+            {
+              "en": "DCI cybercrime unit or the nearest police station",
+              "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
+            }
+          ],
+          "evidence": [
+            { "en": "Caller's phone number and time of the call", "sw": "Nambari ya aliyepiga na muda wa simu" },
+            { "en": "A written note of exactly what you shared", "sw": "Maelezo yaliyoandikwa ya kile ulichotoa hasa" },
+            { "en": "The bank's reference number", "sw": "Nambari ya kumbukumbu ya benki" }
+          ]
+        },
+        "plan_remote_access": {
+          "type": "plan",
+          "urgency": "critical",
+          "title": {
+            "en": "Cut off the attacker's access to your phone",
+            "sw": "Kata ufikiaji wa mdukuzi kwenye simu yako"
+          },
+          "steps": [
+            {
+              "en": "Turn on airplane mode or switch off Wi-Fi and mobile data right now to disconnect the attacker.",
+              "sw": "Washa hali ya ndege au zima Wi-Fi na data ya simu sasa hivi ili kumkatia mdukuzi mawasiliano."
+            },
+            {
+              "en": "Uninstall the app you were told to install (check Settings, then Apps). Remote access apps such as AnyDesk or TeamViewer are common in this scam.",
+              "sw": "Ondoa programu uliyoambiwa upakue (angalia Mipangilio, kisha Programu). Programu za ufikiaji wa mbali kama AnyDesk au TeamViewer hutumika sana katika ulaghai huu."
+            },
+            {
+              "en": "From a different phone, call your bank on its official number. Ask them to block your card, online banking and mobile banking.",
+              "sw": "Ukitumia simu nyingine, piga benki yako kwa nambari yake rasmi. Waombe wazuie kadi yako, benki mtandaoni na benki kwa simu."
+            },
+            {
+              "en": "Change your bank, email and mobile money passwords and PINs from a clean device, not from the affected phone.",
+              "sw": "Badilisha nenosiri na PIN za benki, barua pepe na pesa za simu ukitumia kifaa safi, si simu iliyoathirika."
+            },
+            {
+              "en": "Consider a factory reset of the phone, and back up only photos and contacts first.",
+              "sw": "Fikiria kurejesha simu kwenye mipangilio ya kiwandani, na uhifadhi picha na namba za simu pekee kwanza."
+            },
+            {
+              "en": "Check your statements for unknown transactions and report everything to the police or DCI.",
+              "sw": "Angalia taarifa za akaunti kwa miamala usiyoitambua na uripoti kila kitu kwa polisi au DCI."
+            }
+          ],
+          "report_to": [
+            { "en": "Your bank's fraud desk", "sw": "Idara ya udanganyifu ya benki yako" },
+            { "en": "Your mobile money provider", "sw": "Mtoa huduma wako wa pesa za simu" },
+            {
+              "en": "DCI cybercrime unit or the nearest police station",
+              "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
+            }
+          ],
+          "evidence": [
+            { "en": "Name of the app that was installed", "sw": "Jina la programu iliyopakuliwa" },
+            { "en": "Caller's phone number and time of the call", "sw": "Nambari ya aliyepiga na muda wa simu" },
+            { "en": "Bank alerts and statements", "sw": "Ujumbe wa benki na taarifa za akaunti" }
+          ]
+        },
+        "plan_nothing_shared": {
+          "type": "plan",
+          "urgency": "low",
+          "title": {
+            "en": "You avoided the scam: now stay safe",
+            "sw": "Umeepuka ulaghai: sasa endelea kuwa salama"
+          },
+          "steps": [
+            {
+              "en": "End the call. Do not call back any number the caller gave you.",
+              "sw": "Maliza simu. Usipige tena nambari yoyote uliyopewa na aliyekupigia."
+            },
+            {
+              "en": "If you want to be sure, call your bank on the official number from your card or website and ask if they contacted you.",
+              "sw": "Ikiwa unataka kuwa na uhakika, piga benki yako kwa nambari rasmi kutoka kwenye kadi yako au tovuti na uulize kama waliwasiliana nawe."
+            },
+            {
+              "en": "Block the number and report it to your mobile network and to the police or DCI.",
+              "sw": "Zuia nambari hiyo na uiripoti kwa kampuni yako ya simu na kwa polisi au DCI."
+            },
+            {
+              "en": "Warn family and friends about this scam, especially older relatives.",
+              "sw": "Waonye familia na marafiki kuhusu ulaghai huu, hasa wazee."
+            }
+          ],
+          "report_to": [
+            { "en": "Your mobile network", "sw": "Kampuni yako ya simu" },
+            {
+              "en": "DCI cybercrime unit or the nearest police station",
+              "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
+            }
+          ],
+          "evidence": [
+            { "en": "Caller's phone number and time of the call", "sw": "Nambari ya aliyepiga na muda wa simu" }
+          ]
+        }
+      }
+    },
+    "sent_money": {
+      "title": {
+        "en": "Sent money to a scammer",
+        "sw": "Nilituma pesa kwa tapeli"
+      },
+      "description": {
+        "en": "You sent money to someone and now believe it was a scam.",
+        "sw": "Ulituma pesa kwa mtu na sasa unaamini ulikuwa ulaghai."
+      },
+      "start": "start",
+      "nodes": {
+        "start": {
+          "type": "question",
+          "text": {
+            "en": "How did you send the money?",
+            "sw": "Ulituma pesa kwa njia gani?"
+          },
+          "options": [
+            {
+              "label": { "en": "M-Pesa or another mobile money service", "sw": "M-Pesa au huduma nyingine ya pesa za simu" },
+              "next": "plan_mobile_money"
+            },
+            {
+              "label": { "en": "Bank transfer", "sw": "Uhamisho wa benki" },
+              "next": "plan_bank_transfer"
+            },
+            {
+              "label": {
+                "en": "Airtime, gift cards, crypto or something else",
+                "sw": "Muda wa maongezi, kadi za zawadi, sarafu za kidijitali au kitu kingine"
+              },
+              "next": "plan_other_payment"
+            }
+          ]
+        },
+        "plan_mobile_money": {
+          "type": "plan",
+          "urgency": "critical",
+          "title": {
+            "en": "Act within minutes: mobile money sent to a scammer",
+            "sw": "Chukua hatua ndani ya dakika chache: pesa za simu zimetumwa kwa tapeli"
+          },
+          "steps": [
+            {
+              "en": "Contact your mobile money provider immediately through its official customer care channel and report the transaction. Speed matters.",
+              "sw": "Wasiliana na mtoa huduma wako wa pesa za simu mara moja kupitia njia yake rasmi ya huduma kwa wateja na uripoti muamala huo. Kasi ni muhimu."
+            },
+            {
+              "en": "Ask whether the transaction can be reversed or the recipient's account restricted. A reversal is not guaranteed.",
+              "sw": "Uliza kama muamala unaweza kurejeshwa au akaunti ya mpokeaji kuzuiwa. Kurejeshwa hakuhakikishwi."
+            },
+            {
+              "en": "Keep the confirmation message with the transaction code. Do not delete it.",
+              "sw": "Hifadhi ujumbe wa uthibitisho wenye msimbo wa muamala. Usiufute."
+            },
+            {
+              "en": "Stop talking to the scammer and do not send any more money, even for 'fees to recover your money'. That is a second scam.",
+              "sw": "Acha kuongea na tapeli na usitume pesa zaidi, hata kwa 'ada ya kurejesha pesa zako'. Huo ni ulaghai wa pili."
+            },
+            {
+              "en": "Block the scammer's number and report it to your provider.",
+              "sw": "Zuia nambari ya tapeli na uiripoti kwa mtoa huduma wako."
+            },
+            {
+              "en": "Report to the police or the DCI and ask for an OB or reference number.",
+              "sw": "Ripoti kwa polisi au DCI na uombe nambari ya OB au ya kumbukumbu."
+            }
+          ],
+          "report_to": [
+            { "en": "Your mobile money provider", "sw": "Mtoa huduma wako wa pesa za simu" },
+            {
+              "en": "DCI cybercrime unit or the nearest police station",
+              "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
+            }
+          ],
+          "evidence": [
+            { "en": "Transaction confirmation message and code", "sw": "Ujumbe wa uthibitisho wa muamala na msimbo" },
+            { "en": "Scammer's number and name shown on the transaction", "sw": "Nambari ya tapeli na jina lililoonekana kwenye muamala" },
+            { "en": "Screenshots of calls, SMS and chats", "sw": "Picha za skrini za simu, SMS na mazungumzo" },
+            { "en": "Amount, date and time", "sw": "Kiasi, tarehe na saa" }
+          ]
+        },
+        "plan_bank_transfer": {
+          "type": "plan",
+          "urgency": "critical",
+          "title": {
+            "en": "Act now: bank transfer sent to a scammer",
+            "sw": "Chukua hatua sasa: uhamisho wa benki umetumwa kwa tapeli"
+          },
+          "steps": [
+            {
+              "en": "Call your bank immediately on its official number and report the transfer as fraud.",
+              "sw": "Piga benki yako mara moja kwa nambari yake rasmi na uripoti uhamisho huo kama ulaghai."
+            },
+            {
+              "en": "Give them the recipient's account name, number and bank, the amount, and the time. Ask them to recall or freeze the funds if possible.",
+              "sw": "Wape jina la akaunti ya mpokeaji, nambari na benki, kiasi na muda. Waombe warudishe au wazuie pesa hizo ikiwezekana."
+            },
+            {
+              "en": "Ask for a reference number for your report and write it down.",
+              "sw": "Omba nambari ya kumbukumbu ya ripoti yako na uiandike."
+            },
+            {
+              "en": "Stop all contact with the scammer and send no more money.",
+              "sw": "Acha mawasiliano yote na tapeli na usitume pesa zaidi."
+            },
+            {
+              "en": "Report to the police or the DCI and ask for an OB or reference number.",
+              "sw": "Ripoti kwa polisi au DCI na uombe nambari ya OB au ya kumbukumbu."
+            }
+          ],
+          "report_to": [
+            { "en": "Your bank's fraud desk", "sw": "Idara ya udanganyifu ya benki yako" },
+            {
+              "en": "DCI cybercrime unit or the nearest police station",
+              "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
+            }
+          ],
+          "evidence": [
+            { "en": "Transfer receipt or confirmation", "sw": "Risiti au uthibitisho wa uhamisho" },
+            { "en": "Recipient account details", "sw": "Maelezo ya akaunti ya mpokeaji" },
+            { "en": "Chats, calls and messages with the scammer", "sw": "Mazungumzo, simu na ujumbe na tapeli" },
+            { "en": "The bank's reference number", "sw": "Nambari ya kumbukumbu ya benki" }
+          ]
+        },
+        "plan_other_payment": {
+          "type": "plan",
+          "urgency": "high",
+          "title": {
+            "en": "Act quickly: other payment sent to a scammer",
+            "sw": "Chukua hatua haraka: malipo mengine yametumwa kwa tapeli"
+          },
+          "steps": [
+            {
+              "en": "Keep all proof: receipts, gift card codes, wallet addresses and screenshots.",
+              "sw": "Hifadhi ushahidi wote: risiti, misimbo ya kadi za zawadi, anwani za pochi na picha za skrini."
+            },
+            {
+              "en": "Contact the company or platform you paid through (the airtime provider, gift card issuer or crypto exchange) straight away and report the fraud.",
+              "sw": "Wasiliana mara moja na kampuni au jukwaa ulilolipia (mtoa huduma wa muda wa maongezi, mtoaji wa kadi ya zawadi au soko la sarafu za kidijitali) na uripoti ulaghai."
+            },
+            {
+              "en": "Stop all contact with the scammer and do not pay anything more.",
+              "sw": "Acha mawasiliano yote na tapeli na usilipe chochote zaidi."
+            },
+            {
+              "en": "Report to the police or the DCI and ask for an OB or reference number.",
+              "sw": "Ripoti kwa polisi au DCI na uombe nambari ya OB au ya kumbukumbu."
+            }
+          ],
+          "report_to": [
+            { "en": "The company or platform you paid through", "sw": "Kampuni au jukwaa ulilolipia" },
+            {
+              "en": "DCI cybercrime unit or the nearest police station",
+              "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
+            }
+          ],
+          "evidence": [
+            { "en": "Receipts, codes and wallet addresses", "sw": "Risiti, misimbo na anwani za pochi" },
+            { "en": "Screenshots of conversations", "sw": "Picha za skrini za mazungumzo" },
+            { "en": "Amount, date and time", "sw": "Kiasi, tarehe na saa" }
+          ]
+        }
+      }
+    },
+    "hijacked_account": {
+      "title": {
+        "en": "Hijacked account",
+        "sw": "Akaunti iliyodukuliwa"
+      },
+      "description": {
+        "en": "Someone took over your WhatsApp, social media or email account, often through a link.",
+        "sw": "Mtu amechukua akaunti yako ya WhatsApp, mitandao ya kijamii au barua pepe, mara nyingi kupitia kiungo."
+      },
+      "start": "start",
+      "nodes": {
+        "start": {
+          "type": "question",
+          "text": {
+            "en": "Which account was taken over?",
+            "sw": "Ni akaunti gani iliyodukuliwa?"
+          },
+          "options": [
+            {
+              "label": { "en": "WhatsApp", "sw": "WhatsApp" },
+              "next": "plan_whatsapp"
+            },
+            {
+              "label": { "en": "Facebook, Instagram, TikTok or similar", "sw": "Facebook, Instagram, TikTok au kama hizo" },
+              "next": "plan_social"
+            },
+            {
+              "label": { "en": "Email", "sw": "Barua pepe" },
+              "next": "plan_email"
+            }
+          ]
+        },
+        "plan_whatsapp": {
+          "type": "plan",
+          "urgency": "high",
+          "title": {
+            "en": "Take back your WhatsApp and protect your contacts",
+            "sw": "Rudisha WhatsApp yako na uwalinde watu wako"
+          },
+          "steps": [
+            {
+              "en": "Open WhatsApp (or reinstall it) and sign in with your phone number. WhatsApp will send a 6-digit code by SMS or call. Never share this code with anyone.",
+              "sw": "Fungua WhatsApp (au iweke upya) na uingie kwa nambari yako ya simu. WhatsApp itatuma msimbo wa tarakimu 6 kwa SMS au simu. Usimpe mtu yeyote msimbo huu."
+            },
+            {
+              "en": "If you are asked for a two-step verification PIN that you did not set, use the 'Forgot PIN' option and follow the instructions, or use the in-app help option to contact WhatsApp support.",
+              "sw": "Ukiombwa PIN ya uthibitishaji wa hatua mbili ambayo hukuiweka, tumia chaguo la 'Umesahau PIN' na ufuate maelekezo, au tumia chaguo la msaada ndani ya programu kuwasiliana na msaada wa WhatsApp."
+            },
+            {
+              "en": "Once you are back in, open Settings, then Linked devices, and log out of every device you do not recognise.",
+              "sw": "Ukishaingia, fungua Mipangilio, kisha Vifaa vilivyounganishwa, na utoke kwenye kila kifaa usichokitambua."
+            },
+            {
+              "en": "Turn on two-step verification (Settings, Account, Two-step verification) and add a recovery email.",
+              "sw": "Washa uthibitishaji wa hatua mbili (Mipangilio, Akaunti, Uthibitishaji wa hatua mbili) na uweke barua pepe ya kurejesha akaunti."
+            },
+            {
+              "en": "Warn your contacts and groups right away that your account was hacked and that they should ignore any money requests or links sent from it.",
+              "sw": "Waonye watu wako na makundi yako mara moja kuwa akaunti yako ilidukuliwa na wapuuze maombi yoyote ya pesa au viungo vilivyotumwa kutoka kwake."
+            },
+            {
+              "en": "Do not click the link again. Change the password of any account that uses the same password as the one you may have entered.",
+              "sw": "Usibofye kiungo hicho tena. Badilisha nenosiri la akaunti yoyote inayotumia nenosiri sawa na ulilokuwa umeingiza."
+            },
+            {
+              "en": "If a contact sent money because of a message from your account, tell them to report it to their bank or mobile money provider immediately.",
+              "sw": "Ikiwa mtu alituma pesa kwa sababu ya ujumbe kutoka kwenye akaunti yako, mwambie aripoti mara moja kwa benki yake au mtoa huduma wake wa pesa za simu."
+            }
+          ],
+          "report_to": [
+            { "en": "WhatsApp support (in-app help)", "sw": "Msaada wa WhatsApp (ndani ya programu)" },
+            {
+              "en": "DCI cybercrime unit or the nearest police station if money was lost",
+              "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu ikiwa pesa zilipotea"
+            }
+          ],
+          "evidence": [
+            { "en": "The link or message that was clicked", "sw": "Kiungo au ujumbe uliobofya" },
+            { "en": "Screenshots of messages the attacker sent to your contacts", "sw": "Picha za skrini za ujumbe mdukuzi aliotuma kwa watu wako" },
+            { "en": "Names and numbers of contacts who lost money", "sw": "Majina na nambari za watu waliopoteza pesa" }
+          ]
+        },
+        "plan_social": {
+          "type": "plan",
+          "urgency": "high",
+          "title": {
+            "en": "Recover your social media account",
+            "sw": "Rudisha akaunti yako ya mitandao ya kijamii"
+          },
+          "steps": [
+            {
+              "en": "Use the platform's official 'hacked account' or 'forgot password' recovery page from a device you trust.",
+              "sw": "Tumia ukurasa rasmi wa urejeshaji wa 'akaunti iliyodukuliwa' au 'nimesahau nenosiri' wa jukwaa hilo kutoka kifaa unachokiamini."
+            },
+            {
+              "en": "Once you are back in, set a new strong password and log out of all other sessions and devices.",
+              "sw": "Ukishaingia, weka nenosiri jipya imara na utoke kwenye vipindi na vifaa vingine vyote."
+            },
+            {
+              "en": "Check that your recovery email and phone number have not been changed. Remove anything you do not recognise.",
+              "sw": "Hakikisha barua pepe na nambari ya simu ya kurejesha akaunti havijabadilishwa. Ondoa chochote usichokitambua."
+            },
+            {
+              "en": "Turn on two-factor authentication, preferably with an authenticator app instead of SMS.",
+              "sw": "Washa uthibitishaji wa hatua mbili, ikiwezekana kwa programu ya uthibitishaji badala ya SMS."
+            },
+            {
+              "en": "Remove unknown apps connected to your account and warn your followers and friends not to trust messages sent while it was hacked.",
+              "sw": "Ondoa programu usizozijua zilizounganishwa na akaunti yako na uwaonye wafuasi na marafiki wasiamini ujumbe uliotumwa wakati ilipodukuliwa."
+            }
+          ],
+          "report_to": [
+            { "en": "The platform's support or report-hacked-account page", "sw": "Msaada wa jukwaa au ukurasa wa kuripoti akaunti iliyodukuliwa" },
+            {
+              "en": "DCI cybercrime unit or the nearest police station if money or identity was involved",
+              "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu ikiwa pesa au utambulisho uliathirika"
+            }
+          ],
+          "evidence": [
+            { "en": "Screenshots of the suspicious link, messages and posts", "sw": "Picha za skrini za kiungo cha kutiliwa shaka, ujumbe na machapisho" },
+            { "en": "Login alerts or emails from the platform", "sw": "Arifa za kuingia au barua pepe kutoka kwa jukwaa" }
+          ]
+        },
+        "plan_email": {
+          "type": "plan",
+          "urgency": "critical",
+          "title": {
+            "en": "Secure your email first: it unlocks your other accounts",
+            "sw": "Linda barua pepe yako kwanza: inafungua akaunti zako nyingine"
+          },
+          "steps": [
+            {
+              "en": "Reset your email password using the provider's official recovery page, then sign out of all other sessions and devices.",
+              "sw": "Weka upya nenosiri la barua pepe yako kupitia ukurasa rasmi wa urejeshaji wa mtoa huduma, kisha utoke kwenye vipindi na vifaa vingine vyote."
+            },
+            {
+              "en": "Turn on two-step verification for the email account.",
+              "sw": "Washa uthibitishaji wa hatua mbili kwa akaunti ya barua pepe."
+            },
+            {
+              "en": "Check the settings for forwarding rules, filters and recovery email or phone. Remove anything you did not set up.",
+              "sw": "Angalia mipangilio ya kusambaza barua, vichujio na barua pepe au simu ya kurejesha akaunti. Ondoa chochote ambacho hukukiweka."
+            },
+            {
+              "en": "Change the passwords of accounts linked to this email, starting with banking, mobile money and social media.",
+              "sw": "Badilisha nenosiri za akaunti zilizounganishwa na barua pepe hii, ukianza na benki, pesa za simu na mitandao ya kijamii."
+            },
+            {
+              "en": "Check your bank and mobile money statements for unknown activity and report any fraud to the provider immediately.",
+              "sw": "Angalia taarifa za benki na pesa za simu kwa shughuli zisizojulikana na uripoti ulaghai wowote kwa mtoa huduma mara moja."
+            }
+          ],
+          "report_to": [
+            { "en": "Your email provider's support", "sw": "Msaada wa mtoa huduma wako wa barua pepe" },
+            {
+              "en": "DCI cybercrime unit or the nearest police station if money or identity was involved",
+              "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu ikiwa pesa au utambulisho uliathirika"
+            }
+          ],
+          "evidence": [
+            { "en": "Security alert emails and login notifications", "sw": "Barua pepe za tahadhari za usalama na arifa za kuingia" },
+            { "en": "Screenshots of unknown forwarding rules or sent messages", "sw": "Picha za skrini za kanuni za kusambaza usizozijua au ujumbe uliotumwa" }
+          ]
+        }
+      }
+    }
+  }
+}
