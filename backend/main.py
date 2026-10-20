@@ -1,4 +1,4 @@
-"""FirstHour backend: triage engine (Phase 2).
+"""FirstHour backend: triage engine (Phase 2) + evidence pack PDF (Phase 3).
 
 Run from the backend folder:
     uvicorn main:app --reload
@@ -8,9 +8,13 @@ Then open http://127.0.0.1:8000/docs to try the API in your browser.
 
 import json
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, List, Literal, Optional
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.responses import Response
+from pydantic import BaseModel, Field
+
+from evidence import build_evidence_pdf
 
 DATA_FILE = Path(__file__).parent / "triage_data.json"
 Lang = Literal["en", "sw"]
@@ -112,3 +116,67 @@ def start_case(case_id: str, lang: Lang = Query("en", description="Language: en 
 @app.get("/cases/{case_id}/nodes/{node_id}")
 def get_node(case_id: str, node_id: str, lang: Lang = Query("en", description="Language: en or sw")) -> dict:
     return build_node_response(case_id, node_id, lang)
+
+
+# ---------------------------------------------------------------------------
+# Phase 3: evidence pack
+# ---------------------------------------------------------------------------
+
+
+class EvidenceRequest(BaseModel):
+    """Everything is optional except the language, so a victim in a hurry
+    can fill in only what they know."""
+
+    lang: Lang = "en"
+    case_id: Optional[str] = Field(None, description="e.g. sent_money")
+    plan_id: Optional[str] = Field(
+        None, description="Action plan to include, e.g. plan_mobile_money"
+    )
+    victim_name: Optional[str] = Field(None, max_length=120)
+    victim_phone: Optional[str] = Field(None, max_length=30)
+    incident_date: Optional[str] = Field(None, max_length=40, description="e.g. 20 Oct 2026")
+    incident_time: Optional[str] = Field(None, max_length=20, description="e.g. 14:30")
+    amount_kes: Optional[float] = Field(None, ge=0, le=1_000_000_000)
+    payment_method: Optional[str] = Field(None, max_length=80)
+    transaction_id: Optional[str] = Field(None, max_length=60)
+    bank_or_provider: Optional[str] = Field(None, max_length=120)
+    scammer_phone: Optional[str] = Field(None, max_length=30)
+    scammer_name: Optional[str] = Field(None, max_length=120)
+    account_affected: Optional[str] = Field(None, max_length=120)
+    description: Optional[str] = Field(None, max_length=3000)
+    actions_taken: List[str] = Field(default_factory=list, max_length=15)
+    bank_reference: Optional[str] = Field(None, max_length=60)
+    ob_number: Optional[str] = Field(None, max_length=60)
+
+
+@app.post("/evidence/pdf")
+def create_evidence_pdf(request: EvidenceRequest) -> Response:
+    """Generate a PDF evidence report. Nothing is stored on the server."""
+    case_title = ""
+    plan = None
+
+    if request.case_id:
+        case = get_case(request.case_id)
+        case_title = localize(case["title"], request.lang)
+        if request.plan_id:
+            node = case["nodes"].get(request.plan_id)
+            if node is None or node["type"] != "plan":
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"Unknown plan '{request.plan_id}' in case '{request.case_id}'",
+                )
+            plan = localize(node, request.lang)
+    elif request.plan_id:
+        raise HTTPException(status_code=422, detail="plan_id needs a case_id")
+
+    pdf_bytes = build_evidence_pdf(
+        report=request.model_dump(),
+        lang=request.lang,
+        case_title=case_title,
+        plan=plan,
+    )
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": 'attachment; filename="firsthour-evidence-report.pdf"'},
+    )
