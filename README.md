@@ -51,8 +51,8 @@ Planned later: SIM swap, fake loan app harassment, leaked ID, WhatsApp and USSD 
 MVP in progress.
 
 - [ ] Research and verified contact sources
-- [ ] Triage decision engine (3 MVP cases, English and Swahili)
-- [ ] Evidence PDF generator
+- [x ] Triage decision engine (3 MVP cases, English and Swahili)
+- [x ] Evidence PDF generator
 - [ ] Telegram bot
 - [ ] Case tracker and dashboard
 - [ ] User testing and evaluation
