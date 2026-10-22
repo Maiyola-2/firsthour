@@ -27,11 +27,17 @@
           },
           "options": [
             {
-              "label": { "en": "Yes, money is missing", "sw": "Ndiyo, pesa zimepotea" },
+              "label": {
+                "en": "Yes, money is missing",
+                "sw": "Ndiyo, pesa zimepotea"
+              },
               "next": "plan_money_lost"
             },
             {
-              "label": { "en": "No, or I am not sure", "sw": "Hapana, au sina uhakika" },
+              "label": {
+                "en": "No, or I am not sure",
+                "sw": "Hapana, au sina uhakika"
+              },
               "next": "q_shared"
             }
           ]
@@ -100,17 +106,32 @@
             }
           ],
           "report_to": [
-            { "en": "Your bank's fraud desk", "sw": "Idara ya udanganyifu ya benki yako" },
+            {
+              "en": "Your bank's fraud desk",
+              "sw": "Idara ya udanganyifu ya benki yako"
+            },
             {
               "en": "DCI cybercrime unit or the nearest police station",
               "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
             }
           ],
           "evidence": [
-            { "en": "Caller's phone number and time of the call", "sw": "Nambari ya aliyepiga na muda wa simu" },
-            { "en": "Screenshots of bank alerts and statements", "sw": "Picha za skrini za ujumbe wa benki na taarifa ya akaunti" },
-            { "en": "Transaction IDs, amounts and dates", "sw": "Nambari za miamala, kiasi na tarehe" },
-            { "en": "The bank's reference number", "sw": "Nambari ya kumbukumbu ya benki" }
+            {
+              "en": "Caller's phone number and time of the call",
+              "sw": "Nambari ya aliyepiga na muda wa simu"
+            },
+            {
+              "en": "Screenshots of bank alerts and statements",
+              "sw": "Picha za skrini za ujumbe wa benki na taarifa ya akaunti"
+            },
+            {
+              "en": "Transaction IDs, amounts and dates",
+              "sw": "Nambari za miamala, kiasi na tarehe"
+            },
+            {
+              "en": "The bank's reference number",
+              "sw": "Nambari ya kumbukumbu ya benki"
+            }
           ]
         },
         "plan_details_shared": {
@@ -147,16 +168,28 @@
             }
           ],
           "report_to": [
-            { "en": "Your bank's fraud desk", "sw": "Idara ya udanganyifu ya benki yako" },
+            {
+              "en": "Your bank's fraud desk",
+              "sw": "Idara ya udanganyifu ya benki yako"
+            },
             {
               "en": "DCI cybercrime unit or the nearest police station",
               "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
             }
           ],
           "evidence": [
-            { "en": "Caller's phone number and time of the call", "sw": "Nambari ya aliyepiga na muda wa simu" },
-            { "en": "A written note of exactly what you shared", "sw": "Maelezo yaliyoandikwa ya kile ulichotoa hasa" },
-            { "en": "The bank's reference number", "sw": "Nambari ya kumbukumbu ya benki" }
+            {
+              "en": "Caller's phone number and time of the call",
+              "sw": "Nambari ya aliyepiga na muda wa simu"
+            },
+            {
+              "en": "A written note of exactly what you shared",
+              "sw": "Maelezo yaliyoandikwa ya kile ulichotoa hasa"
+            },
+            {
+              "en": "The bank's reference number",
+              "sw": "Nambari ya kumbukumbu ya benki"
+            }
           ]
         },
         "plan_remote_access": {
@@ -193,17 +226,32 @@
             }
           ],
           "report_to": [
-            { "en": "Your bank's fraud desk", "sw": "Idara ya udanganyifu ya benki yako" },
-            { "en": "Your mobile money provider", "sw": "Mtoa huduma wako wa pesa za simu" },
+            {
+              "en": "Your bank's fraud desk",
+              "sw": "Idara ya udanganyifu ya benki yako"
+            },
+            {
+              "en": "Your mobile money provider",
+              "sw": "Mtoa huduma wako wa pesa za simu"
+            },
             {
               "en": "DCI cybercrime unit or the nearest police station",
               "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
             }
           ],
           "evidence": [
-            { "en": "Name of the app that was installed", "sw": "Jina la programu iliyopakuliwa" },
-            { "en": "Caller's phone number and time of the call", "sw": "Nambari ya aliyepiga na muda wa simu" },
-            { "en": "Bank alerts and statements", "sw": "Ujumbe wa benki na taarifa za akaunti" }
+            {
+              "en": "Name of the app that was installed",
+              "sw": "Jina la programu iliyopakuliwa"
+            },
+            {
+              "en": "Caller's phone number and time of the call",
+              "sw": "Nambari ya aliyepiga na muda wa simu"
+            },
+            {
+              "en": "Bank alerts and statements",
+              "sw": "Ujumbe wa benki na taarifa za akaunti"
+            }
           ]
         },
         "plan_nothing_shared": {
@@ -232,14 +280,20 @@
             }
           ],
           "report_to": [
-            { "en": "Your mobile network", "sw": "Kampuni yako ya simu" },
+            {
+              "en": "Your mobile network",
+              "sw": "Kampuni yako ya simu"
+            },
             {
               "en": "DCI cybercrime unit or the nearest police station",
               "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
             }
           ],
           "evidence": [
-            { "en": "Caller's phone number and time of the call", "sw": "Nambari ya aliyepiga na muda wa simu" }
+            {
+              "en": "Caller's phone number and time of the call",
+              "sw": "Nambari ya aliyepiga na muda wa simu"
+            }
           ]
         }
       }
@@ -263,11 +317,17 @@
           },
           "options": [
             {
-              "label": { "en": "M-Pesa or another mobile money service", "sw": "M-Pesa au huduma nyingine ya pesa za simu" },
-              "next": "plan_mobile_money"
+              "label": {
+                "en": "M-Pesa or another mobile money service",
+                "sw": "M-Pesa au huduma nyingine ya pesa za simu"
+              },
+              "next": "q_mobile_provider"
             },
             {
-              "label": { "en": "Bank transfer", "sw": "Uhamisho wa benki" },
+              "label": {
+                "en": "Bank transfer",
+                "sw": "Uhamisho wa benki"
+              },
               "next": "plan_bank_transfer"
             },
             {
@@ -313,17 +373,32 @@
             }
           ],
           "report_to": [
-            { "en": "Your mobile money provider", "sw": "Mtoa huduma wako wa pesa za simu" },
+            {
+              "en": "Your mobile money provider",
+              "sw": "Mtoa huduma wako wa pesa za simu"
+            },
             {
               "en": "DCI cybercrime unit or the nearest police station",
               "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
             }
           ],
           "evidence": [
-            { "en": "Transaction confirmation message and code", "sw": "Ujumbe wa uthibitisho wa muamala na msimbo" },
-            { "en": "Scammer's number and name shown on the transaction", "sw": "Nambari ya tapeli na jina lililoonekana kwenye muamala" },
-            { "en": "Screenshots of calls, SMS and chats", "sw": "Picha za skrini za simu, SMS na mazungumzo" },
-            { "en": "Amount, date and time", "sw": "Kiasi, tarehe na saa" }
+            {
+              "en": "Transaction confirmation message and code",
+              "sw": "Ujumbe wa uthibitisho wa muamala na msimbo"
+            },
+            {
+              "en": "Scammer's number and name shown on the transaction",
+              "sw": "Nambari ya tapeli na jina lililoonekana kwenye muamala"
+            },
+            {
+              "en": "Screenshots of calls, SMS and chats",
+              "sw": "Picha za skrini za simu, SMS na mazungumzo"
+            },
+            {
+              "en": "Amount, date and time",
+              "sw": "Kiasi, tarehe na saa"
+            }
           ]
         },
         "plan_bank_transfer": {
@@ -356,17 +431,32 @@
             }
           ],
           "report_to": [
-            { "en": "Your bank's fraud desk", "sw": "Idara ya udanganyifu ya benki yako" },
+            {
+              "en": "Your bank's fraud desk",
+              "sw": "Idara ya udanganyifu ya benki yako"
+            },
             {
               "en": "DCI cybercrime unit or the nearest police station",
               "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
             }
           ],
           "evidence": [
-            { "en": "Transfer receipt or confirmation", "sw": "Risiti au uthibitisho wa uhamisho" },
-            { "en": "Recipient account details", "sw": "Maelezo ya akaunti ya mpokeaji" },
-            { "en": "Chats, calls and messages with the scammer", "sw": "Mazungumzo, simu na ujumbe na tapeli" },
-            { "en": "The bank's reference number", "sw": "Nambari ya kumbukumbu ya benki" }
+            {
+              "en": "Transfer receipt or confirmation",
+              "sw": "Risiti au uthibitisho wa uhamisho"
+            },
+            {
+              "en": "Recipient account details",
+              "sw": "Maelezo ya akaunti ya mpokeaji"
+            },
+            {
+              "en": "Chats, calls and messages with the scammer",
+              "sw": "Mazungumzo, simu na ujumbe na tapeli"
+            },
+            {
+              "en": "The bank's reference number",
+              "sw": "Nambari ya kumbukumbu ya benki"
+            }
           ]
         },
         "plan_other_payment": {
@@ -395,16 +485,127 @@
             }
           ],
           "report_to": [
-            { "en": "The company or platform you paid through", "sw": "Kampuni au jukwaa ulilolipia" },
+            {
+              "en": "The company or platform you paid through",
+              "sw": "Kampuni au jukwaa ulilolipia"
+            },
             {
               "en": "DCI cybercrime unit or the nearest police station",
               "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
             }
           ],
           "evidence": [
-            { "en": "Receipts, codes and wallet addresses", "sw": "Risiti, misimbo na anwani za pochi" },
-            { "en": "Screenshots of conversations", "sw": "Picha za skrini za mazungumzo" },
-            { "en": "Amount, date and time", "sw": "Kiasi, tarehe na saa" }
+            {
+              "en": "Receipts, codes and wallet addresses",
+              "sw": "Risiti, misimbo na anwani za pochi"
+            },
+            {
+              "en": "Screenshots of conversations",
+              "sw": "Picha za skrini za mazungumzo"
+            },
+            {
+              "en": "Amount, date and time",
+              "sw": "Kiasi, tarehe na saa"
+            }
+          ]
+        },
+        "q_mobile_provider": {
+          "type": "question",
+          "text": {
+            "en": "Which mobile money service did you use?",
+            "sw": "Ulitumia huduma gani ya pesa za simu?"
+          },
+          "options": [
+            {
+              "label": {
+                "en": "Safaricom M-PESA",
+                "sw": "Safaricom M-PESA"
+              },
+              "next": "plan_safaricom"
+            },
+            {
+              "label": {
+                "en": "Airtel Money or another provider",
+                "sw": "Airtel Money au mtoa huduma mwingine"
+              },
+              "next": "plan_mobile_money"
+            }
+          ]
+        },
+        "plan_safaricom": {
+          "type": "plan",
+          "urgency": "critical",
+          "verified": "2026-10-21",
+          "sources": [
+            "https://www.safaricom.co.ke/media-center-landing/terms-and-conditions/m-pesa-reversal",
+            "https://safaricom.co.ke/fraud-awareness",
+            "https://www.safaricom.co.ke/main-mpesa/m-pesa-for-you/m-pesa-tips/secure-m-pesa"
+          ],
+          "title": {
+            "en": "Act within minutes: M-PESA sent to a scammer (Safaricom)",
+            "sw": "Chukua hatua ndani ya dakika chache: M-PESA imetumwa kwa tapeli (Safaricom)"
+          },
+          "steps": [
+            {
+              "en": "Request a reversal right now. Fastest ways: forward the full M-PESA confirmation message to 456; or chat with Zuri on WhatsApp at 0722000100 (choose option 2, 'M-PESA Help and Reversal', then option 1, 'Reverse'); or tap the Reverse transaction icon in the M-PESA app or mySafaricom app if you made the payment there.",
+              "sw": "Omba kurejeshewa pesa sasa hivi. Njia za haraka zaidi: tuma ujumbe mzima wa uthibitisho wa M-PESA kwenda 456; au ongea na Zuri kupitia WhatsApp kwa 0722000100 (chagua chaguo 2, 'M-PESA Help and Reversal', kisha chaguo 1, 'Reverse'); au bonyeza ikoni ya Reverse transaction kwenye programu ya M-PESA au mySafaricom ikiwa ulilipia kupitia programu hiyo."
+            },
+            {
+              "en": "Watch for an SMS from 'Reversal'. Safaricom says updates arrive within about 2 hours. Safaricom contacts the recipient and the reversal depends on their consent, so it is not guaranteed, especially if the money has already been withdrawn or spent.",
+              "sw": "Subiri SMS kutoka 'Reversal'. Safaricom inasema majibu hufika ndani ya takriban saa 2. Safaricom huwasiliana na mpokeaji na kurejeshwa kunategemea ridhaa yake, kwa hivyo hakuhakikishwi, hasa kama pesa zimeshatolewa au kutumiwa."
+            },
+            {
+              "en": "Report the scammer to Safaricom: forward the scammer's number or message to 333.",
+              "sw": "Ripoti tapeli kwa Safaricom: tuma nambari ya tapeli au ujumbe wake kwenda 333."
+            },
+            {
+              "en": "Call Safaricom customer care on 100 or 200, or visit a Safaricom shop, and say you were defrauded. Give them the transaction code and the scammer's number.",
+              "sw": "Piga huduma kwa wateja ya Safaricom kwa 100 au 200, au tembelea duka la Safaricom, na useme kuwa umetapeliwa. Wape msimbo wa muamala na nambari ya tapeli."
+            },
+            {
+              "en": "If you shared your M-PESA PIN, change it now from the M-PESA menu and never share it with anyone. Safaricom says it only calls from 0722000000. Do not press or dial any code a caller gives you.",
+              "sw": "Ikiwa ulitoa PIN yako ya M-PESA, ibadilishe sasa kupitia menyu ya M-PESA na usimpe mtu yeyote. Safaricom inasema inapiga simu kutoka 0722000000 pekee. Usibonyeze wala kupiga msimbo wowote unaopewa na aliyepiga."
+            },
+            {
+              "en": "Keep the M-PESA confirmation message and do not delete it. Stop talking to the scammer and send no more money, even for 'fees to recover your money'. That is a second scam.",
+              "sw": "Hifadhi ujumbe wa uthibitisho wa M-PESA na usiufute. Acha kuongea na tapeli na usitume pesa zaidi, hata kwa 'ada ya kurejesha pesa zako'. Huo ni ulaghai wa pili."
+            },
+            {
+              "en": "Report to the police or the DCI and ask for an OB or reference number. Take the evidence report from this bot with you.",
+              "sw": "Ripoti kwa polisi au DCI na uombe nambari ya OB au ya kumbukumbu. Chukua ripoti ya ushahidi kutoka kwa bot hii."
+            }
+          ],
+          "report_to": [
+            {
+              "en": "Safaricom: forward the scammer's number or message to 333; customer care 100 or 200; Zuri on WhatsApp 0722000100",
+              "sw": "Safaricom: tuma nambari au ujumbe wa tapeli kwenda 333; huduma kwa wateja 100 au 200; Zuri kwenye WhatsApp 0722000100"
+            },
+            {
+              "en": "DCI cybercrime unit or the nearest police station",
+              "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu"
+            }
+          ],
+          "evidence": [
+            {
+              "en": "The full M-PESA confirmation message with the transaction code",
+              "sw": "Ujumbe mzima wa uthibitisho wa M-PESA wenye msimbo wa muamala"
+            },
+            {
+              "en": "The scammer's number and the name shown on the transaction",
+              "sw": "Nambari ya tapeli na jina lililoonekana kwenye muamala"
+            },
+            {
+              "en": "Screenshots of calls, SMS and chats",
+              "sw": "Picha za skrini za simu, SMS na mazungumzo"
+            },
+            {
+              "en": "Amount, date and time",
+              "sw": "Kiasi, tarehe na saa"
+            },
+            {
+              "en": "The reference or reversal SMS from Safaricom",
+              "sw": "SMS ya kumbukumbu au ya 'Reversal' kutoka Safaricom"
+            }
           ]
         }
       }
@@ -428,15 +629,24 @@
           },
           "options": [
             {
-              "label": { "en": "WhatsApp", "sw": "WhatsApp" },
+              "label": {
+                "en": "WhatsApp",
+                "sw": "WhatsApp"
+              },
               "next": "plan_whatsapp"
             },
             {
-              "label": { "en": "Facebook, Instagram, TikTok or similar", "sw": "Facebook, Instagram, TikTok au kama hizo" },
+              "label": {
+                "en": "Facebook, Instagram, TikTok or similar",
+                "sw": "Facebook, Instagram, TikTok au kama hizo"
+              },
               "next": "plan_social"
             },
             {
-              "label": { "en": "Email", "sw": "Barua pepe" },
+              "label": {
+                "en": "Email",
+                "sw": "Barua pepe"
+              },
               "next": "plan_email"
             }
           ]
@@ -479,16 +689,28 @@
             }
           ],
           "report_to": [
-            { "en": "WhatsApp support (in-app help)", "sw": "Msaada wa WhatsApp (ndani ya programu)" },
+            {
+              "en": "WhatsApp support (in-app help)",
+              "sw": "Msaada wa WhatsApp (ndani ya programu)"
+            },
             {
               "en": "DCI cybercrime unit or the nearest police station if money was lost",
               "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu ikiwa pesa zilipotea"
             }
           ],
           "evidence": [
-            { "en": "The link or message that was clicked", "sw": "Kiungo au ujumbe uliobofya" },
-            { "en": "Screenshots of messages the attacker sent to your contacts", "sw": "Picha za skrini za ujumbe mdukuzi aliotuma kwa watu wako" },
-            { "en": "Names and numbers of contacts who lost money", "sw": "Majina na nambari za watu waliopoteza pesa" }
+            {
+              "en": "The link or message that was clicked",
+              "sw": "Kiungo au ujumbe uliobofya"
+            },
+            {
+              "en": "Screenshots of messages the attacker sent to your contacts",
+              "sw": "Picha za skrini za ujumbe mdukuzi aliotuma kwa watu wako"
+            },
+            {
+              "en": "Names and numbers of contacts who lost money",
+              "sw": "Majina na nambari za watu waliopoteza pesa"
+            }
           ]
         },
         "plan_social": {
@@ -521,15 +743,24 @@
             }
           ],
           "report_to": [
-            { "en": "The platform's support or report-hacked-account page", "sw": "Msaada wa jukwaa au ukurasa wa kuripoti akaunti iliyodukuliwa" },
+            {
+              "en": "The platform's support or report-hacked-account page",
+              "sw": "Msaada wa jukwaa au ukurasa wa kuripoti akaunti iliyodukuliwa"
+            },
             {
               "en": "DCI cybercrime unit or the nearest police station if money or identity was involved",
               "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu ikiwa pesa au utambulisho uliathirika"
             }
           ],
           "evidence": [
-            { "en": "Screenshots of the suspicious link, messages and posts", "sw": "Picha za skrini za kiungo cha kutiliwa shaka, ujumbe na machapisho" },
-            { "en": "Login alerts or emails from the platform", "sw": "Arifa za kuingia au barua pepe kutoka kwa jukwaa" }
+            {
+              "en": "Screenshots of the suspicious link, messages and posts",
+              "sw": "Picha za skrini za kiungo cha kutiliwa shaka, ujumbe na machapisho"
+            },
+            {
+              "en": "Login alerts or emails from the platform",
+              "sw": "Arifa za kuingia au barua pepe kutoka kwa jukwaa"
+            }
           ]
         },
         "plan_email": {
@@ -562,15 +793,24 @@
             }
           ],
           "report_to": [
-            { "en": "Your email provider's support", "sw": "Msaada wa mtoa huduma wako wa barua pepe" },
+            {
+              "en": "Your email provider's support",
+              "sw": "Msaada wa mtoa huduma wako wa barua pepe"
+            },
             {
               "en": "DCI cybercrime unit or the nearest police station if money or identity was involved",
               "sw": "Kitengo cha uhalifu wa mtandaoni cha DCI au kituo cha polisi kilicho karibu ikiwa pesa au utambulisho uliathirika"
             }
           ],
           "evidence": [
-            { "en": "Security alert emails and login notifications", "sw": "Barua pepe za tahadhari za usalama na arifa za kuingia" },
-            { "en": "Screenshots of unknown forwarding rules or sent messages", "sw": "Picha za skrini za kanuni za kusambaza usizozijua au ujumbe uliotumwa" }
+            {
+              "en": "Security alert emails and login notifications",
+              "sw": "Barua pepe za tahadhari za usalama na arifa za kuingia"
+            },
+            {
+              "en": "Screenshots of unknown forwarding rules or sent messages",
+              "sw": "Picha za skrini za kanuni za kusambaza usizozijua au ujumbe uliotumwa"
+            }
           ]
         }
       }

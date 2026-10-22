@@ -1,0 +1,155 @@
+{
+  "_note": "Escalation ladders. 'verified' = date checked against the official sources listed. Police ladder is general advice (no official escalation page found).",
+  "bank": {
+    "label": {
+      "en": "Bank",
+      "sw": "Benki"
+    },
+    "verified": "2026-10-22",
+    "wait_note": {
+      "en": "Banks undertake to resolve complaints within 7 days, so a reminder in 7 days is a good choice.",
+      "sw": "Benki huahidi kutatua malalamiko ndani ya siku 7, kwa hivyo ukumbusho wa siku 7 ni chaguo zuri."
+    },
+    "steps": [
+      {
+        "en": "Make sure your complaint is formal and keep proof of it (email, stamped letter or the bank's reference number).",
+        "sw": "Hakikisha malalamiko yako ni rasmi na uhifadhi ushahidi wake (barua pepe, barua iliyopigwa muhuri au nambari ya kumbukumbu ya benki)."
+      },
+      {
+        "en": "Banks must acknowledge a complaint within 48 hours and undertake to resolve it within 7 days. If it will take longer than seven business days, the bank must tell you and give a timeline.",
+        "sw": "Benki lazima zithibitishe kupokea malalamiko ndani ya saa 48 na ziahidi kuyatatua ndani ya siku 7. Ikichukua zaidi ya siku saba za kazi, benki lazima ikuambie na ikupe ratiba."
+      },
+      {
+        "en": "If the bank has not resolved it, or you are not satisfied, write to the Central Bank of Kenya with full details of your complaint, the bank's response, and copies of all correspondence.",
+        "sw": "Ikiwa benki haijatatua, au huridhiki, andikia Benki Kuu ya Kenya (CBK) ukiwa na maelezo kamili ya malalamiko yako, jibu la benki, na nakala za mawasiliano yote."
+      },
+      {
+        "en": "CBK cannot consider a matter that is already in court. Get CBK's current contact details from its official website, centralbank.go.ke.",
+        "sw": "CBK haiwezi kushughulikia suala lililo mahakamani tayari. Pata mawasiliano ya sasa ya CBK kutoka tovuti yake rasmi, centralbank.go.ke."
+      }
+    ],
+    "sources": [
+      "https://www.centralbank.go.ke/wp-content/uploads/2023/12/Customer-Complaints-Handling-Mechanism.pdf"
+    ]
+  },
+  "mobile_money": {
+    "label": {
+      "en": "Mobile money provider",
+      "sw": "Mtoa huduma wa pesa za simu"
+    },
+    "verified": "2026-10-22",
+    "wait_note": {
+      "en": "Safaricom's M-PESA terms set no deadline for resolving a complaint. A reminder in 7 days is our suggestion.",
+      "sw": "Masharti ya M-PESA ya Safaricom hayaweki kikomo cha muda cha kutatua malalamiko. Ukumbusho wa siku 7 ni pendekezo letu."
+    },
+    "steps": [
+      {
+        "en": "Contact Safaricom Customer Care again, quote your reference number, and ask for your complaint to go to the Safaricom manager responsible for M-PESA operations.",
+        "sw": "Wasiliana tena na huduma kwa wateja ya Safaricom, taja nambari yako ya kumbukumbu, na uombe malalamiko yako yapelekwe kwa meneja wa Safaricom anayehusika na uendeshaji wa M-PESA."
+      },
+      {
+        "en": "If it is still unresolved, you may refer the dispute to the Central Bank of Kenya (M-PESA Customer Terms and Conditions, clause 15.3). Write with full details and copies of your correspondence.",
+        "sw": "Ikiwa bado haijatatuliwa, unaweza kupeleka mgogoro kwa Benki Kuu ya Kenya (Masharti ya Wateja wa M-PESA, kifungu 15.3). Andika ukiwa na maelezo kamili na nakala za mawasiliano yako."
+      },
+      {
+        "en": "Disputes that Customer Care does not resolve may also be taken to a Kenyan court.",
+        "sw": "Migogoro ambayo huduma kwa wateja haitatui inaweza pia kupelekwa mahakamani nchini Kenya."
+      },
+      {
+        "en": "Reversal claims for erroneous transfers must be made within one month of the transaction date, and the recipient must not have redeemed the money. Act early.",
+        "sw": "Madai ya kurejeshewa pesa zilizotumwa kimakosa lazima yafanywe ndani ya mwezi mmoja tangu tarehe ya muamala, na mpokeaji asiwe ameshatumia pesa hizo. Chukua hatua mapema."
+      }
+    ],
+    "sources": [
+      "https://www.safaricom.co.ke/media-center-landing/terms-and-conditions/m-pesa-customer-terms-conditions"
+    ]
+  },
+  "telecom": {
+    "label": {
+      "en": "Mobile network (SIM or line)",
+      "sw": "Kampuni ya simu (laini au SIM)"
+    },
+    "verified": "2026-10-22",
+    "wait_note": {
+      "en": "The regulator sets no fixed waiting period before you escalate. A reminder in 7 days is our suggestion.",
+      "sw": "Mamlaka haiweki kipindi maalum cha kusubiri kabla ya kupeleka juu. Ukumbusho wa siku 7 ni pendekezo letu."
+    },
+    "steps": [
+      {
+        "en": "Report the problem to your service provider first and keep records: call logs, messages and reference numbers. Ask how long it should take, then ask for an internal escalation if it is not resolved.",
+        "sw": "Ripoti tatizo kwa mtoa huduma wako kwanza na uhifadhi kumbukumbu: orodha ya simu, ujumbe na nambari za kumbukumbu. Uliza itachukua muda gani, kisha uombe ipelekwe ngazi ya juu ndani ya kampuni isipotatuliwa."
+      },
+      {
+        "en": "If it is still unresolved, send a written complaint to the Communications Authority of Kenya within six months of the incident, with proof of your earlier complaint to the provider. Filing is free.",
+        "sw": "Ikiwa bado haijatatuliwa, tuma malalamiko yaliyoandikwa kwa Mamlaka ya Mawasiliano ya Kenya (CA) ndani ya miezi sita tangu tukio, ukiambatanisha ushahidi wa malalamiko yako ya awali kwa mtoa huduma. Kuwasilisha ni bure."
+      },
+      {
+        "en": "You can use the online form at www.ca.go.ke or email complaints@ca.go.ke or chukuahatua@ca.go.ke. CA says it acknowledges complaints within 3 days and responds within 10 days.",
+        "sw": "Unaweza kutumia fomu ya mtandaoni kwenye www.ca.go.ke au kutuma barua pepe kwa complaints@ca.go.ke au chukuahatua@ca.go.ke. CA inasema inathibitisha kupokea malalamiko ndani ya siku 3 na kujibu ndani ya siku 10."
+      },
+      {
+        "en": "CA does not handle matters that are in court or already concluded by a court.",
+        "sw": "CA haishughulikii masuala yaliyo mahakamani au yaliyokwisha kuamuliwa na mahakama."
+      }
+    ],
+    "sources": [
+      "https://www.ca.go.ke/node/243"
+    ]
+  },
+  "police": {
+    "label": {
+      "en": "Police / DCI",
+      "sw": "Polisi / DCI"
+    },
+    "verified": null,
+    "wait_note": {
+      "en": "General advice only: no official escalation page was found. A reminder in 7 days is our suggestion.",
+      "sw": "Ushauri wa jumla tu: hakuna ukurasa rasmi wa kupeleka juu uliopatikana. Ukumbusho wa siku 7 ni pendekezo letu."
+    },
+    "steps": [
+      {
+        "en": "Keep your OB number safe and ask the station for the name of the officer handling your case.",
+        "sw": "Hifadhi nambari yako ya OB na uulize kituoni jina la afisa anayeshughulikia kesi yako."
+      },
+      {
+        "en": "Follow up in person or by phone. Write down the date and who you spoke to each time.",
+        "sw": "Fuatilia ana kwa ana au kwa simu. Andika tarehe na jina la mtu uliyeongea naye kila mara."
+      },
+      {
+        "en": "Take your evidence report and screenshots with you when you follow up.",
+        "sw": "Chukua ripoti yako ya ushahidi na picha za skrini unapofuatilia."
+      },
+      {
+        "en": "If nothing happens, ask the officer in charge of the station how to take the matter higher. This bot does not yet have a verified official escalation route for police cases.",
+        "sw": "Ikiwa hakuna kinachoendelea, muulize afisa msimamizi wa kituo jinsi ya kupeleka suala juu zaidi. Bot hii bado haina njia rasmi iliyothibitishwa ya kupeleka kesi za polisi ngazi ya juu."
+      }
+    ],
+    "sources": []
+  },
+  "other": {
+    "label": {
+      "en": "Other",
+      "sw": "Nyingine"
+    },
+    "verified": null,
+    "wait_note": {
+      "en": "A reminder in 7 days is our suggestion.",
+      "sw": "Ukumbusho wa siku 7 ni pendekezo letu."
+    },
+    "steps": [
+      {
+        "en": "Put your complaint in writing and keep a copy and any reference number.",
+        "sw": "Andika malalamiko yako na uhifadhi nakala pamoja na nambari yoyote ya kumbukumbu."
+      },
+      {
+        "en": "Ask the organisation for its complaints procedure and for your complaint to be escalated internally.",
+        "sw": "Uliza shirika hilo utaratibu wake wa malalamiko na uombe malalamiko yako yapelekwe ngazi ya juu ndani yake."
+      },
+      {
+        "en": "Ask which regulator oversees the organisation and complain there if it does not resolve the matter.",
+        "sw": "Uliza ni mamlaka gani inasimamia shirika hilo na ulalamike huko ikiwa halitatui suala hilo."
+      }
+    ],
+    "sources": []
+  }
+}

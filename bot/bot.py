@@ -14,12 +14,13 @@ import logging
 import os
 import re
 import sys
+from datetime import datetime, timedelta
 from io import BytesIO
 
 import httpx
 from dotenv import load_dotenv
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from telegram.error import BadRequest
+from telegram.error import BadRequest, Forbidden, NetworkError, TimedOut
 from telegram.ext import (
     Application,
     CallbackQueryHandler,
@@ -40,6 +41,10 @@ log = logging.getLogger("firsthour.bot")
 
 # Hijacked-account plans that get a "warn my contacts" button -> API platform
 WARN_PLATFORM = {"plan_whatsapp": "whatsapp", "plan_social": "social", "plan_email": "email"}
+
+INSTITUTIONS = ("bank", "mobile_money", "telecom", "police", "other")
+EN_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+SW_MONTHS = ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ago", "Sep", "Okt", "Nov", "Des"]
 
 MAX_MESSAGE = 3800  # Telegram's limit is 4096 characters
 
@@ -91,10 +96,51 @@ T = {
             "FirstHour guides you through the first hour after a scam or hack.\n\n"
             "/start - begin or change language\n"
             "/menu - back to the main menu\n"
-            "/cancel - stop the evidence report\n"
-            "/skip - skip the current evidence question"
+            "/cancel - stop what you are doing\n"
+            "/skip - skip the current question\n"
+            "/mycases - your saved follow-ups\n"
+            "/deletemydata - erase everything saved about you"
         ),
         "error": "Something went wrong. Please send /start to try again.",
+        "track_btn": "\u23F0 Track this case and set a reminder",
+        "track_inst_q": "Who did you report this to? I will help you follow up.",
+        "inst": {
+            "bank": "Bank",
+            "mobile_money": "Mobile money provider",
+            "telecom": "Mobile network (SIM or line)",
+            "police": "Police / DCI",
+            "other": "Other",
+        },
+        "track_ref_q": "What reference number did they give you? Send it, or tap Skip.",
+        "track_days_q": "When should I remind you to follow up?\n\n{note}",
+        "days_btn": "{n} days",
+        "track_saved": "Saved. I will remind you on {date}. Send /mycases any time to see your follow-ups.",
+        "mycases_title": "Your follow-ups:",
+        "mycases_empty": "You have no saved follow-ups yet. After an action plan, tap Track this case.",
+        "status_waiting": "waiting",
+        "status_resolved": "resolved",
+        "fu_line": "{n}. {inst} | Ref: {ref} | Follow up: {date} | {status}",
+        "no_ref": "none",
+        "fu_resolved_btn": "\u2705 Resolved",
+        "fu_noreply_btn": "\u274C No reply: what next?",
+        "fu_snooze_btn": "\u23F0 Remind me in 3 days",
+        "reminder": (
+            "\u23F0 Follow-up reminder\n\nYou asked me to remind you about your report to "
+            "{inst} (reference: {ref}).\n\nDid they reply?"
+        ),
+        "esc_title": "WHAT TO DO NEXT: {inst}",
+        "esc_sources": "Official sources:",
+        "esc_unverified": "Note: this is general advice, not from an official source.",
+        "esc_verified": "Checked against official sources on {date}.",
+        "fu_marked": "Marked as resolved. Well done for following up.",
+        "fu_snoozed": "Okay. I will remind you again on {date}.",
+        "not_found": "I could not find that follow-up.",
+        "use_buttons": "Please tap one of the buttons above, or send /cancel.",
+        "delete_confirm": "This will permanently erase everything saved about you. Continue?",
+        "delete_yes": "Yes, erase everything",
+        "delete_no": "No, keep it",
+        "delete_done": "Done. Everything saved about you was erased ({n} follow-ups).",
+        "delete_kept": "Okay, nothing was erased.",
     },
     "sw": {
         "choose_case": "Nini kilitokea? Chagua chaguo linalokaribia hali yako:",
@@ -130,10 +176,51 @@ T = {
             "FirstHour inakuongoza katika saa ya kwanza baada ya ulaghai au udukuzi.\n\n"
             "/start - anza au badilisha lugha\n"
             "/menu - rudi menyu kuu\n"
-            "/cancel - simamisha ripoti ya ushahidi\n"
-            "/skip - ruka swali la sasa la ushahidi"
+            "/cancel - simamisha unachofanya\n"
+            "/skip - ruka swali la sasa\n"
+            "/mycases - ufuatiliaji wako uliohifadhiwa\n"
+            "/deletemydata - futa kila kitu kilichohifadhiwa kukuhusu"
         ),
         "error": "Hitilafu imetokea. Tafadhali tuma /start ujaribu tena.",
+        "track_btn": "\u23F0 Fuatilia kesi hii na uweke ukumbusho",
+        "track_inst_q": "Uliripoti kwa nani? Nitakusaidia kufuatilia.",
+        "inst": {
+            "bank": "Benki",
+            "mobile_money": "Mtoa huduma wa pesa za simu",
+            "telecom": "Kampuni ya simu (laini au SIM)",
+            "police": "Polisi / DCI",
+            "other": "Nyingine",
+        },
+        "track_ref_q": "Walikupa nambari gani ya kumbukumbu? Itume, au bonyeza Ruka.",
+        "track_days_q": "Nikukumbushe lini kufuatilia?\n\n{note}",
+        "days_btn": "siku {n}",
+        "track_saved": "Imehifadhiwa. Nitakukumbusha tarehe {date}. Tuma /mycases wakati wowote kuona ufuatiliaji wako.",
+        "mycases_title": "Ufuatiliaji wako:",
+        "mycases_empty": "Bado huna ufuatiliaji uliohifadhiwa. Baada ya mpango wa hatua, bonyeza Fuatilia kesi hii.",
+        "status_waiting": "inasubiri",
+        "status_resolved": "imetatuliwa",
+        "fu_line": "{n}. {inst} | Kumb: {ref} | Fuatilia: {date} | {status}",
+        "no_ref": "hakuna",
+        "fu_resolved_btn": "\u2705 Imetatuliwa",
+        "fu_noreply_btn": "\u274C Hakuna jibu: nini kifuatacho?",
+        "fu_snooze_btn": "\u23F0 Nikumbushe baada ya siku 3",
+        "reminder": (
+            "\u23F0 Ukumbusho wa kufuatilia\n\nUliniomba nikukumbushe kuhusu ripoti yako kwa "
+            "{inst} (nambari ya kumbukumbu: {ref}).\n\nWalijibu?"
+        ),
+        "esc_title": "FANYA HIVI BAADA YA HAPA: {inst}",
+        "esc_sources": "Vyanzo rasmi:",
+        "esc_unverified": "Kumbuka: huu ni ushauri wa jumla, si kutoka chanzo rasmi.",
+        "esc_verified": "Imekaguliwa dhidi ya vyanzo rasmi tarehe {date}.",
+        "fu_marked": "Imewekwa kuwa imetatuliwa. Hongera kwa kufuatilia.",
+        "fu_snoozed": "Sawa. Nitakukumbusha tena tarehe {date}.",
+        "not_found": "Sikuweza kupata ufuatiliaji huo.",
+        "use_buttons": "Tafadhali bonyeza moja ya vitufe hapo juu, au tuma /cancel.",
+        "delete_confirm": "Hii itafuta kabisa kila kitu kilichohifadhiwa kukuhusu. Endelea?",
+        "delete_yes": "Ndiyo, futa kila kitu",
+        "delete_no": "Hapana, vihifadhi",
+        "delete_done": "Imekamilika. Kila kitu kilichohifadhiwa kukuhusu kimefutwa (ufuatiliaji {n}).",
+        "delete_kept": "Sawa, hakuna kilichofutwa.",
     },
 }
 
@@ -164,7 +251,9 @@ EV_FIELDS = [
 
 def get_client() -> httpx.AsyncClient:
     """One place to build the HTTP client (also makes testing easy)."""
-    return httpx.AsyncClient(base_url=API_URL, timeout=20)
+    key = os.getenv("FIRSTHOUR_API_KEY", "")
+    headers = {"X-API-Key": key} if key else {}
+    return httpx.AsyncClient(base_url=API_URL, timeout=20, headers=headers)
 
 
 async def api_get(path: str, **params) -> dict | list:
@@ -179,6 +268,20 @@ async def api_pdf(payload: dict) -> bytes:
         response = await client.post("/evidence/pdf", json=payload)
         response.raise_for_status()
         return response.content
+
+
+async def api_post(path: str, payload: dict | None = None) -> dict:
+    async with get_client() as client:
+        response = await client.post(path, json=payload)
+        response.raise_for_status()
+        return response.json()
+
+
+async def api_delete(path: str) -> dict:
+    async with get_client() as client:
+        response = await client.delete(path)
+        response.raise_for_status()
+        return response.json()
 
 
 # ---------------------------------------------------------------------------
@@ -277,6 +380,7 @@ async def show_node(query, data: dict, lang: str) -> None:
         final_rows.append([button(t["warn_btn"], f"warn:{data['node_id']}")])
     final_rows += [
         [button(t["evidence_btn"], f"ev:{data['case']}:{data['node_id']}")],
+        [button(t["track_btn"], f"track:{data['case']}:{data['node_id']}")],
         [button(t["menu_btn"], "menu")],
     ]
     for index, part in enumerate(parts):
@@ -334,12 +438,199 @@ def parse_amount(text: str) -> float | None:
 
 
 # ---------------------------------------------------------------------------
+# Case tracker: follow-ups, reminders and escalation
+# ---------------------------------------------------------------------------
+
+
+def fmt_date(iso: str, lang: str) -> str:
+    """Show a stored UTC time as a Kenyan (UTC+3) date."""
+    moment = datetime.fromisoformat(iso) + timedelta(hours=3)
+    months = SW_MONTHS if lang == "sw" else EN_MONTHS
+    return f"{moment.day} {months[moment.month - 1]} {moment.year}"
+
+
+def chat_id_of(update: Update) -> int:
+    chat = update.effective_chat
+    return chat.id if chat is not None else update.effective_user.id
+
+
+def menu_markup(lang: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup([[button(T[lang]["menu_btn"], "menu")]])
+
+
+async def send_long(message, text: str, markup: InlineKeyboardMarkup | None = None) -> None:
+    parts = chunk_text(text)
+    for index, part in enumerate(parts):
+        await message.reply_text(part, reply_markup=markup if index == len(parts) - 1 else None)
+
+
+async def start_track(query, context: ContextTypes.DEFAULT_TYPE, case_id: str, plan_id: str) -> None:
+    lang = lang_of(context)
+    context.user_data.pop("ev", None)
+    context.user_data["track"] = {"case": case_id, "plan": plan_id, "step": "inst"}
+    await clear_buttons(query)
+    rows = [[button(T[lang]["inst"][code], f"inst:{code}")] for code in INSTITUTIONS]
+    await query.message.reply_text(T[lang]["track_inst_q"], reply_markup=InlineKeyboardMarkup(rows))
+
+
+async def ask_reference(message, lang: str) -> None:
+    markup = InlineKeyboardMarkup([[button(T[lang]["skip_btn"], "tskip")]])
+    await message.reply_text(T[lang]["track_ref_q"], reply_markup=markup)
+
+
+async def ask_days(message, context: ContextTypes.DEFAULT_TYPE) -> None:
+    lang = lang_of(context)
+    track = context.user_data["track"]
+    info = await api_get(f"/tracker/escalation/{track['institution']}", lang=lang)
+    track["step"] = "days"
+    rows = [[button(T[lang]["days_btn"].format(n=n), f"days:{n}") for n in (3, 7, 14)]]
+    await message.reply_text(
+        T[lang]["track_days_q"].format(note=info["wait_note"]),
+        reply_markup=InlineKeyboardMarkup(rows),
+    )
+
+
+async def save_track(message, context: ContextTypes.DEFAULT_TYPE, chat_id: int, days: int) -> None:
+    lang = lang_of(context)
+    track = context.user_data.pop("track")
+    item = await api_post(
+        "/tracker/follow-ups",
+        {
+            "chat_id": chat_id,
+            "case_id": track["case"],
+            "plan_id": track["plan"],
+            "institution": track["institution"],
+            "reference": track.get("reference"),
+            "days": days,
+            "lang": lang,
+        },
+    )
+    await message.reply_text(
+        T[lang]["track_saved"].format(date=fmt_date(item["follow_up_at"], lang)),
+        reply_markup=menu_markup(lang),
+    )
+
+
+async def show_escalation(message, lang: str, institution: str, follow_up_id: int | None = None) -> None:
+    t = T[lang]
+    info = await api_get(f"/tracker/escalation/{institution}", lang=lang)
+    lines = [t["esc_title"].format(inst=info["label"]), ""]
+    lines += [f"{number}. {step}" for number, step in enumerate(info["steps"], start=1)]
+    lines.append("")
+    if info.get("verified"):
+        lines.append(t["esc_verified"].format(date=info["verified"]))
+    else:
+        lines.append(t["esc_unverified"])
+    if info.get("sources"):
+        lines.append(t["esc_sources"])
+        lines += info["sources"]
+    rows = []
+    if follow_up_id is not None:
+        rows.append([button(t["fu_snooze_btn"], f"fu_snz:{follow_up_id}")])
+        rows.append([button(t["fu_resolved_btn"], f"fu_ok:{follow_up_id}")])
+    rows.append([button(t["menu_btn"], "menu")])
+    await send_long(message, "\n".join(lines), InlineKeyboardMarkup(rows))
+
+
+async def show_mycases(message, chat_id: int, lang: str) -> None:
+    t = T[lang]
+    items = await api_get("/tracker/follow-ups", chat_id=chat_id)
+    if not items:
+        await message.reply_text(t["mycases_empty"], reply_markup=menu_markup(lang))
+        return
+    lines, rows = [t["mycases_title"], ""], []
+    for number, item in enumerate(items[:8], start=1):
+        lines.append(
+            t["fu_line"].format(
+                n=number,
+                inst=t["inst"].get(item["institution"], item["institution"]),
+                ref=item["reference"] or t["no_ref"],
+                date=fmt_date(item["follow_up_at"], lang),
+                status=t["status_" + item["status"]],
+            )
+        )
+        if item["status"] == "waiting":
+            rows.append(
+                [
+                    button(f"#{number} {t['fu_noreply_btn']}", f"fu_esc:{item['id']}"),
+                    button(f"#{number} \u2705", f"fu_ok:{item['id']}"),
+                ]
+            )
+    rows.append([button(t["menu_btn"], "menu")])
+    await send_long(message, "\n".join(lines), InlineKeyboardMarkup(rows))
+
+
+async def handle_follow_up_action(
+    query, update: Update, context: ContextTypes.DEFAULT_TYPE, action: str, follow_up_id: int
+) -> None:
+    chat_id = chat_id_of(update)
+    fallback = lang_of(context) or "en"
+    try:
+        item = await api_get(f"/tracker/follow-ups/{follow_up_id}", chat_id=chat_id)
+    except httpx.HTTPStatusError as exc:
+        if exc.response.status_code == 404:
+            await query.message.reply_text(T[fallback]["not_found"])
+            return
+        raise
+    # The saved language wins, so reminders work even after the bot restarted.
+    lang = item["lang"] if item["lang"] in T else fallback
+    context.user_data.setdefault("lang", lang)
+    await clear_buttons(query)
+    if action == "fu_ok":
+        await api_post(f"/tracker/follow-ups/{follow_up_id}/resolve", {"chat_id": chat_id})
+        await query.message.reply_text(T[lang]["fu_marked"], reply_markup=menu_markup(lang))
+    elif action == "fu_snz":
+        updated = await api_post(f"/tracker/follow-ups/{follow_up_id}/snooze", {"chat_id": chat_id, "days": 3})
+        await query.message.reply_text(
+            T[lang]["fu_snoozed"].format(date=fmt_date(updated["follow_up_at"], lang)),
+            reply_markup=menu_markup(lang),
+        )
+    else:
+        await show_escalation(query.message, lang, item["institution"], follow_up_id)
+
+
+async def check_due(context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Runs every 30 minutes: remind people whose follow-up date has arrived."""
+    try:
+        items = await api_get("/tracker/due")
+    except Exception as exc:
+        log.warning("Reminder check failed: %s", type(exc).__name__)
+        return
+    for item in items:
+        lang = item["lang"] if item["lang"] in T else "en"
+        t = T[lang]
+        text = t["reminder"].format(
+            inst=t["inst"].get(item["institution"], item["institution"]),
+            ref=item["reference"] or t["no_ref"],
+        )
+        rows = [
+            [button(t["fu_resolved_btn"], f"fu_ok:{item['id']}")],
+            [button(t["fu_noreply_btn"], f"fu_esc:{item['id']}")],
+            [button(t["fu_snooze_btn"], f"fu_snz:{item['id']}")],
+        ]
+        try:
+            await context.bot.send_message(
+                chat_id=item["chat_id"], text=text, reply_markup=InlineKeyboardMarkup(rows)
+            )
+        except Forbidden:
+            pass  # the user blocked the bot: do not retry forever
+        except Exception as exc:
+            log.warning("Could not send reminder: %s", type(exc).__name__)
+            continue
+        try:
+            await api_post(f"/tracker/follow-ups/{item['id']}/reminded")
+        except Exception as exc:
+            log.warning("Could not mark reminder: %s", type(exc).__name__)
+
+
+# ---------------------------------------------------------------------------
 # Telegram handlers
 # ---------------------------------------------------------------------------
 
 
 async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     context.user_data.pop("ev", None)
+    context.user_data.pop("track", None)
     await show_welcome(update.message)
 
 
@@ -349,6 +640,7 @@ async def cmd_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await show_welcome(update.message)
         return
     context.user_data.pop("ev", None)
+    context.user_data.pop("track", None)
     await show_cases(update.message, lang)
 
 
@@ -358,7 +650,9 @@ async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def cmd_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     lang = lang_of(context) or "en"
-    if context.user_data.pop("ev", None) is not None:
+    evidence = context.user_data.pop("ev", None)
+    tracking = context.user_data.pop("track", None)
+    if evidence is not None or tracking is not None:
         await update.message.reply_text(T[lang]["ev_cancelled"])
     else:
         await update.message.reply_text(T[lang]["hint"])
@@ -366,16 +660,40 @@ async def cmd_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
 async def cmd_skip(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     lang = lang_of(context) or "en"
+    track = context.user_data.get("track")
+    if track is not None and track.get("step") == "ref":
+        await ask_days(update.message, context)
+        return
     if "ev" not in context.user_data:
         await update.message.reply_text(T[lang]["hint"])
         return
     await advance(update.message, context, None)
 
 
+async def cmd_mycases(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await show_mycases(update.message, chat_id_of(update), lang_of(context) or "en")
+
+
+async def cmd_deletemydata(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    lang = lang_of(context) or "en"
+    markup = InlineKeyboardMarkup(
+        [[button(T[lang]["delete_yes"], "del:yes")], [button(T[lang]["delete_no"], "del:no")]]
+    )
+    await update.message.reply_text(T[lang]["delete_confirm"], reply_markup=markup)
+
+
 async def on_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     lang = lang_of(context)
     if lang is None:
         await show_welcome(update.message)
+        return
+    track = context.user_data.get("track")
+    if track is not None:
+        if track.get("step") == "ref":
+            track["reference"] = (update.message.text or "").strip()[:60] or None
+            await ask_days(update.message, context)
+        else:
+            await update.message.reply_text(T[lang]["use_buttons"])
         return
     ev = context.user_data.get("ev")
     if ev is None:
@@ -406,6 +724,10 @@ async def on_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         await show_cases(query.message, parts[1])
         return
 
+    if action in ("fu_ok", "fu_esc", "fu_snz") and len(parts) == 2 and parts[1].isdigit():
+        await handle_follow_up_action(query, update, context, action, int(parts[1]))
+        return
+
     lang = lang_of(context)
     if lang is None:  # for example the bot was restarted and forgot the language
         await show_welcome(query.message)
@@ -415,6 +737,7 @@ async def on_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         await query.edit_message_text(WELCOME, reply_markup=language_keyboard())
     elif action == "menu":
         context.user_data.pop("ev", None)
+        context.user_data.pop("track", None)
         await show_cases(query.message, lang, edit=False)
         await clear_buttons(query)
     elif action == "case" and len(parts) == 2:
@@ -435,6 +758,34 @@ async def on_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             data["message"],
             reply_markup=InlineKeyboardMarkup([[button(T[lang]["menu_btn"], "menu")]]),
         )
+    elif action == "track" and len(parts) == 3:
+        await start_track(query, context, parts[1], parts[2])
+    elif action == "inst" and len(parts) == 2 and parts[1] in INSTITUTIONS:
+        track = context.user_data.get("track")
+        await clear_buttons(query)
+        if track is not None:
+            track["institution"] = parts[1]
+            track["step"] = "ref"
+            await ask_reference(query.message, lang)
+    elif action == "tskip":
+        track = context.user_data.get("track")
+        await clear_buttons(query)
+        if track is not None and track.get("step") == "ref":
+            await ask_days(query.message, context)
+    elif action == "days" and len(parts) == 2 and parts[1].isdigit():
+        track = context.user_data.get("track")
+        await clear_buttons(query)
+        if track is not None and track.get("step") == "days" and 1 <= int(parts[1]) <= 60:
+            await save_track(query.message, context, chat_id_of(update), int(parts[1]))
+    elif action == "del" and len(parts) == 2:
+        await clear_buttons(query)
+        if parts[1] == "yes":
+            result = await api_delete(f"/tracker/chats/{chat_id_of(update)}")
+            context.user_data.pop("ev", None)
+            context.user_data.pop("track", None)
+            await query.message.reply_text(T[lang]["delete_done"].format(n=result["deleted"]))
+        else:
+            await query.message.reply_text(T[lang]["delete_kept"])
     elif action == "skip":
         if "ev" not in context.user_data:
             await clear_buttons(query)
@@ -445,8 +796,16 @@ async def on_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 async def on_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
     error = context.error
-    # Log the error type only: messages can contain personal details or the token.
-    log.warning("Handler error: %s", type(error).__name__)
+    # Network problems are safe to describe (token hidden). For anything else
+    # log only the error type: messages could contain personal details.
+    if isinstance(error, (NetworkError, TimedOut, httpx.HTTPError)):
+        detail = str(error)
+        token = getattr(getattr(context, "bot", None), "token", None)
+        if token:
+            detail = detail.replace(token, "XXXX")
+        log.warning("Network problem (%s): %s", type(error).__name__, detail[:200])
+    else:
+        log.warning("Handler error: %s", type(error).__name__)
     message = None
     if isinstance(update, Update):
         message = update.effective_message
@@ -461,15 +820,34 @@ async def on_error(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 def build_application(token: str) -> Application:
-    app = Application.builder().token(token).build()
+    # Generous timeouts: Wi-Fi and mobile data in Kenya can be slow or patchy.
+    app = (
+        Application.builder()
+        .token(token)
+        .connect_timeout(30)
+        .read_timeout(30)
+        .write_timeout(30)
+        .pool_timeout(30)
+        .get_updates_connect_timeout(30)
+        .get_updates_read_timeout(40)
+        .get_updates_write_timeout(30)
+        .get_updates_pool_timeout(30)
+        .build()
+    )
     app.add_handler(CommandHandler("start", cmd_start))
     app.add_handler(CommandHandler("menu", cmd_menu))
     app.add_handler(CommandHandler("help", cmd_help))
     app.add_handler(CommandHandler("cancel", cmd_cancel))
     app.add_handler(CommandHandler("skip", cmd_skip))
+    app.add_handler(CommandHandler("mycases", cmd_mycases))
+    app.add_handler(CommandHandler("deletemydata", cmd_deletemydata))
     app.add_handler(CallbackQueryHandler(on_callback))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, on_text))
     app.add_error_handler(on_error)
+    if app.job_queue is not None:
+        app.job_queue.run_repeating(check_due, interval=1800, first=60)
+    else:
+        print('Reminders are OFF. Fix with:  pip install "python-telegram-bot[job-queue]"')
     return app
 
 
