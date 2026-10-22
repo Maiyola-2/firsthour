@@ -1,4 +1,5 @@
-"""FirstHour backend: triage engine (Phase 2) + evidence pack PDF (Phase 3).
+"""FirstHour backend: triage engine (Phase 2), evidence pack PDF (Phase 3),
+contact-warning generator (Phase 5).
 
 Run from the backend folder:
     uvicorn main:app --reload
@@ -15,6 +16,7 @@ from fastapi.responses import Response
 from pydantic import BaseModel, Field
 
 from evidence import build_evidence_pdf
+from warn import build_warning
 
 DATA_FILE = Path(__file__).parent / "triage_data.json"
 Lang = Literal["en", "sw"]
@@ -180,3 +182,18 @@ def create_evidence_pdf(request: EvidenceRequest) -> Response:
         media_type="application/pdf",
         headers={"Content-Disposition": 'attachment; filename="firsthour-evidence-report.pdf"'},
     )
+
+
+# ---------------------------------------------------------------------------
+# Phase 5: contact-warning generator
+# ---------------------------------------------------------------------------
+
+
+@app.get("/templates/warn-contacts")
+def warn_contacts(
+    lang: Lang = Query("en", description="Language: en or sw"),
+    platform: Literal["whatsapp", "social", "email"] = Query("whatsapp"),
+    name: Optional[str] = Query(None, max_length=60, description="Optional name to sign the message"),
+) -> dict:
+    """A ready-to-send message to warn contacts after an account was hijacked."""
+    return {"message": build_warning(lang, platform, name)}
