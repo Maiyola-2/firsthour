@@ -1,5 +1,5 @@
 """FirstHour backend: triage engine (Phase 2), evidence pack PDF (Phase 3),
-contact-warning generator and case tracker (Phase 5).
+contact-warning generator, case tracker and community dashboard (Phase 5).
 
 Run from the backend folder:
     uvicorn main:app --reload
@@ -16,6 +16,7 @@ from fastapi.responses import Response
 from pydantic import BaseModel, Field
 
 from evidence import build_evidence_pdf
+from community import page_router, public_router, submit_router
 from tracker import init_db, router as tracker_router
 from warn import build_warning
 
@@ -72,6 +73,9 @@ app = FastAPI(
 
 init_db()
 app.include_router(tracker_router)
+app.include_router(submit_router)
+app.include_router(public_router)
+app.include_router(page_router)
 
 
 def get_case(case_id: str) -> dict:

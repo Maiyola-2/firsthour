@@ -141,6 +141,15 @@ T = {
         "delete_no": "No, keep it",
         "delete_done": "Done. Everything saved about you was erased ({n} follow-ups).",
         "delete_kept": "Okay, nothing was erased.",
+        "share_btn": "\U0001F91D Share anonymously to protect others",
+        "share_intro": (
+            "You can help warn your community. If you agree, I will record ONLY three things: the type "
+            "of incident, your county (optional) and the week. Nothing that identifies you is saved, "
+            "and you can skip the county.\n\nWhich county are you in?"
+        ),
+        "share_skip": "Prefer not to say",
+        "share_thanks": "Thank you. Your anonymous report was added to the community dashboard.",
+        "share_already": "You have already shared this one. Thank you.",
     },
     "sw": {
         "choose_case": "Nini kilitokea? Chagua chaguo linalokaribia hali yako:",
@@ -221,6 +230,15 @@ T = {
         "delete_no": "Hapana, vihifadhi",
         "delete_done": "Imekamilika. Kila kitu kilichohifadhiwa kukuhusu kimefutwa (ufuatiliaji {n}).",
         "delete_kept": "Sawa, hakuna kilichofutwa.",
+        "share_btn": "\U0001F91D Shiriki bila jina ili kuwalinda wengine",
+        "share_intro": (
+            "Unaweza kusaidia kuonya jamii yako. Ukikubali, nitarekodi vitu VITATU TU: aina ya tukio, "
+            "kaunti yako (si lazima) na wiki. Hakuna kinachokutambulisha kinachohifadhiwa, "
+            "na unaweza kuruka kaunti.\n\nUko kaunti gani?"
+        ),
+        "share_skip": "Sipendi kusema",
+        "share_thanks": "Asante. Ripoti yako isiyo na jina imeongezwa kwenye dashibodi ya jamii.",
+        "share_already": "Tayari umeshiriki hii. Asante.",
     },
 }
 
@@ -381,6 +399,7 @@ async def show_node(query, data: dict, lang: str) -> None:
     final_rows += [
         [button(t["evidence_btn"], f"ev:{data['case']}:{data['node_id']}")],
         [button(t["track_btn"], f"track:{data['case']}:{data['node_id']}")],
+        [button(t["share_btn"], f"share:{data['case']}:{data['node_id']}")],
         [button(t["menu_btn"], "menu")],
     ]
     for index, part in enumerate(parts):
@@ -624,6 +643,43 @@ async def check_due(context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Anonymous sharing to the community dashboard
+# ---------------------------------------------------------------------------
+
+
+async def start_share(query, context: ContextTypes.DEFAULT_TYPE, case_id: str, plan_id: str) -> None:
+    lang = lang_of(context)
+    key = f"{case_id}:{plan_id}"
+    await clear_buttons(query)
+    if key in context.user_data.get("shared", set()):
+        await query.message.reply_text(T[lang]["share_already"], reply_markup=menu_markup(lang))
+        return
+    counties = await api_get("/community/counties")
+    context.user_data["share"] = {"case": case_id, "plan": plan_id}
+    rows = []
+    for start in range(0, len(counties), 3):
+        rows.append([button(name, f"cty:{index}") for index, name in enumerate(counties[start:start + 3], start=start)])
+    rows.append([button(T[lang]["share_skip"], "cty:none")])
+    await query.message.reply_text(T[lang]["share_intro"], reply_markup=InlineKeyboardMarkup(rows))
+
+
+async def finish_share(query, context: ContextTypes.DEFAULT_TYPE, choice: str) -> None:
+    lang = lang_of(context)
+    share = context.user_data.pop("share", None)
+    await clear_buttons(query)
+    if share is None:
+        return
+    county = None
+    if choice != "none":
+        counties = await api_get("/community/counties")
+        if choice.isdigit() and int(choice) < len(counties):
+            county = counties[int(choice)]
+    await api_post("/community/reports", {"case_id": share["case"], "plan_id": share["plan"], "county": county})
+    context.user_data.setdefault("shared", set()).add(f"{share['case']}:{share['plan']}")
+    await query.message.reply_text(T[lang]["share_thanks"], reply_markup=menu_markup(lang))
+
+
+# ---------------------------------------------------------------------------
 # Telegram handlers
 # ---------------------------------------------------------------------------
 
@@ -631,6 +687,7 @@ async def check_due(context: ContextTypes.DEFAULT_TYPE) -> None:
 async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     context.user_data.pop("ev", None)
     context.user_data.pop("track", None)
+    context.user_data.pop("share", None)
     await show_welcome(update.message)
 
 
@@ -777,6 +834,10 @@ async def on_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         await clear_buttons(query)
         if track is not None and track.get("step") == "days" and 1 <= int(parts[1]) <= 60:
             await save_track(query.message, context, chat_id_of(update), int(parts[1]))
+    elif action == "share" and len(parts) == 3:
+        await start_share(query, context, parts[1], parts[2])
+    elif action == "cty" and len(parts) == 2:
+        await finish_share(query, context, parts[1])
     elif action == "del" and len(parts) == 2:
         await clear_buttons(query)
         if parts[1] == "yes":

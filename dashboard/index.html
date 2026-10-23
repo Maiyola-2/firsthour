@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FirstHour Community Dashboard</title>
+<style>
+  :root {
+    --bg: #f4f6fa; --card: #ffffff; --ink: #172033; --muted: #5b667a; --line: #dde3ee;
+    --accent: #16325c; --bar: #2f6fdb; --bar2: #1f9d8a; --warn-bg: #fff4d6; --warn-ink: #6b4a00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1522; --card: #172033; --ink: #e8edf7; --muted: #9aa6bd; --line: #2a3650;
+      --accent: #8fb4f5; --bar: #5b95f0; --bar2: #44c2ad; --warn-bg: #3a2f10; --warn-ink: #ffd98a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 20px 16px 48px; }
+  header { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; justify-content: space-between; }
+  h1 { margin: 0; font-size: 1.6rem; color: var(--accent); }
+  .sub { margin: 4px 0 0; color: var(--muted); }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; }
+  select, button { font: inherit; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line);
+                   background: var(--card); color: var(--ink); cursor: pointer; }
+  button[aria-pressed="true"] { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .banner { margin: 16px 0 0; padding: 12px 14px; border-radius: 10px; background: var(--warn-bg);
+            color: var(--warn-ink); font-weight: 600; }
+  .grid { display: grid; gap: 16px; margin-top: 16px; align-items: start; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+  .card h2 { margin: 0 0 12px; font-size: 1.05rem; }
+  .big { font-size: 2.6rem; font-weight: 700; color: var(--accent); line-height: 1.1; }
+  .row { display: grid; grid-template-columns: minmax(110px, 38%) 1fr 44px; gap: 8px; align-items: center; margin: 8px 0; font-size: .92rem; }
+  .row .name { overflow-wrap: anywhere; }
+  .track { background: var(--bg); border-radius: 6px; height: 14px; overflow: hidden; }
+  .fill { height: 100%; background: var(--bar); border-radius: 6px; }
+  .fill.alt { background: var(--bar2); }
+  .num { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+  .weeks { display: flex; align-items: flex-end; gap: 4px; height: 170px; margin-top: 8px; }
+  .wk { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; min-width: 0; }
+  .wk .col { width: 100%; background: var(--bar); border-radius: 4px 4px 0 0; min-height: 2px; }
+  .wk .hid { width: 100%; height: 14px; border-radius: 4px; background: repeating-linear-gradient(45deg, var(--line), var(--line) 4px, transparent 4px, transparent 8px); }
+  .wk small { display: block; min-height: 14px; font-size: .62rem; color: var(--muted); margin-top: 4px; white-space: nowrap; }
+  .wk .v { font-size: .66rem; color: var(--muted); }
+  .empty { color: var(--muted); padding: 8px 0; }
+  .note { margin-top: 24px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; color: var(--muted); font-size: .9rem; }
+  .note strong { color: var(--ink); }
+  @media (max-width: 520px) { .row { grid-template-columns: 1fr 1fr 40px; } .row .name { grid-column: 1 / -1; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1 id="title"></h1>
+      <p class="sub" id="subtitle"></p>
+    </div>
+    <div class="controls">
+      <select id="period" aria-label="Period">
+        <option value="30"></option><option value="90" selected></option><option value="365"></option>
+      </select>
+      <button id="btn-en" type="button">English</button>
+      <button id="btn-sw" type="button">Kiswahili</button>
+    </div>
+  </header>
+
+  <div id="demo" class="banner" hidden></div>
+
+  <div class="grid">
+    <section class="card"><h2 id="h-total"></h2><div class="big" id="total">-</div><p class="sub" id="total-note"></p></section>
+    <section class="card"><h2 id="h-type"></h2><div id="by-type"></div></section>
+    <section class="card"><h2 id="h-sub"></h2><div id="by-sub"></div></section>
+    <section class="card"><h2 id="h-county"></h2><div id="by-county"></div></section>
+    <section class="card" style="grid-column: 1 / -1"><h2 id="h-week"></h2><div class="weeks" id="by-week"></div><p class="sub" id="week-note"></p></section>
+  </div>
+
+  <div class="note" id="privacy"></div>
+</div>
+
+<script>
+const I18N = {
+  en: {
+    title: "FirstHour Community Dashboard",
+    subtitle: "Anonymous reports shared by people who used FirstHour after a scam or hack.",
+    p30: "Last 30 days", p90: "Last 90 days", p365: "Last 12 months",
+    total: "Reports shown", totalNote: "Only groups with enough reports are counted.",
+    type: "By type of incident", sub: "By what happened", county: "By county", week: "Reports per week",
+    weekNote: "Striped bars mean the week has too few reports to show.",
+    empty: "Not enough reports yet to show this safely.",
+    demo: "DEMO DATA: these numbers are synthetic and made up for presentation. They are not real incidents.",
+    privacy: "<strong>How your privacy is protected.</strong> People share only the type of incident, an optional county and the week. No names, phone numbers, reference numbers or exact times are stored, and sharing is always optional. Any group with fewer than {k} reports is hidden so nobody can be identified. These figures only show what people chose to report and are indicative, not official statistics.",
+    error: "Could not load the data. Is the FirstHour API running?"
+  },
+  sw: {
+    title: "Dashibodi ya Jamii ya FirstHour",
+    subtitle: "Ripoti zisizo na majina zilizoshirikiwa na watu waliotumia FirstHour baada ya ulaghai au udukuzi.",
+    p30: "Siku 30 zilizopita", p90: "Siku 90 zilizopita", p365: "Miezi 12 iliyopita",
+    total: "Ripoti zinazoonyeshwa", totalNote: "Makundi yenye ripoti za kutosha pekee ndiyo yanahesabiwa.",
+    type: "Kwa aina ya tukio", sub: "Kwa kilichotokea", county: "Kwa kaunti", week: "Ripoti kwa wiki",
+    weekNote: "Nguzo zenye mistari zinamaanisha wiki hiyo ina ripoti chache mno kuonyeshwa.",
+    empty: "Bado hakuna ripoti za kutosha kuonyesha hili kwa usalama.",
+    demo: "DATA YA MFANO: namba hizi ni za kubuni kwa ajili ya uwasilishaji. Si matukio halisi.",
+    privacy: "<strong>Jinsi faragha yako inavyolindwa.</strong> Watu hushiriki aina ya tukio tu, kaunti (si lazima) na wiki. Hakuna majina, nambari za simu, nambari za kumbukumbu wala muda kamili unaohifadhiwa, na kushiriki ni hiari kila wakati. Kundi lolote lenye ripoti chini ya {k} limefichwa ili mtu yeyote asitambuliwe. Takwimu hizi zinaonyesha tu kile watu walichochagua kuripoti na ni za kukadiria, si takwimu rasmi.",
+    error: "Imeshindwa kupakia data. Je, API ya FirstHour inaendeshwa?"
+  }
+};
+
+let lang = "en";
+try { lang = localStorage.getItem("fh_lang") || "en"; } catch (e) {}
+if (!I18N[lang]) lang = "en";
+const demo = new URLSearchParams(location.search).get("demo") === "1";
+const $ = (id) => document.getElementById(id);
+
+function clear(el) { while (el.firstChild) el.removeChild(el.firstChild); }
+function node(tag, cls, text) {
+  const el = document.createElement(tag);
+  if (cls) el.className = cls;
+  if (text !== undefined) el.textContent = text;
+  return el;
+}
+
+function bars(targetId, rows, alt, t) {
+  const target = $(targetId); clear(target);
+  if (!rows.length) { target.appendChild(node("div", "empty", t.empty)); return; }
+  const max = Math.max(...rows.map(r => r.count));
+  rows.slice(0, 10).forEach(r => {
+    const row = node("div", "row");
+    row.appendChild(node("div", "name", r.label));
+    const track = node("div", "track");
+    const fill = node("div", "fill" + (alt ? " alt" : ""));
+    fill.style.width = Math.max(3, Math.round(100 * r.count / max)) + "%";
+    track.appendChild(fill);
+    row.appendChild(track);
+    row.appendChild(node("div", "num", String(r.count)));
+    target.appendChild(row);
+  });
+}
+
+function weeks(rows, t) {
+  const target = $("by-week"); clear(target);
+  if (!rows.some(r => r.count)) { target.style.height = "auto"; target.appendChild(node("div", "empty", t.empty)); return; }
+  target.style.height = "";
+  const max = Math.max(1, ...rows.map(r => r.count || 0));
+  const step = Math.ceil(rows.length / 12);
+  rows.forEach((r, i) => {
+    const wk = node("div", "wk");
+    if (r.count === null) {
+      wk.appendChild(node("div", "hid"));
+    } else {
+      wk.appendChild(node("div", "v", r.count ? String(r.count) : ""));
+      const col = node("div", "col");
+      col.style.height = Math.round(130 * r.count / max) + "px";
+      wk.appendChild(col);
+    }
+    const d = new Date(r.week_start + "T00:00:00");
+    wk.appendChild(node("small", "", i % step === 0 ? d.toLocaleDateString(lang === "sw" ? "sw-KE" : "en-GB", { day: "numeric", month: "short" }) : ""));
+    target.appendChild(wk);
+  });
+}
+
+function applyLabels() {
+  const t = I18N[lang];
+  document.documentElement.lang = lang;
+  $("title").textContent = t.title; $("subtitle").textContent = t.subtitle;
+  const opts = $("period").options; opts[0].textContent = t.p30; opts[1].textContent = t.p90; opts[2].textContent = t.p365;
+  $("h-total").textContent = t.total; $("total-note").textContent = t.totalNote;
+  $("h-type").textContent = t.type; $("h-sub").textContent = t.sub; $("h-county").textContent = t.county;
+  $("h-week").textContent = t.week; $("week-note").textContent = t.weekNote;
+  $("btn-en").setAttribute("aria-pressed", String(lang === "en"));
+  $("btn-sw").setAttribute("aria-pressed", String(lang === "sw"));
+  const banner = $("demo"); banner.hidden = !demo; banner.textContent = demo ? t.demo : "";
+}
+
+async function load() {
+  const t = I18N[lang];
+  applyLabels();
+  try {
+    const url = "/community/stats?days=" + $("period").value + "&lang=" + lang + "&data=" + (demo ? "demo" : "real");
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const d = await res.json();
+    $("privacy").innerHTML = t.privacy.replace("{k}", d.min_group_size);
+    $("total").textContent = d.total_shown === null ? "-" : String(d.total_shown);
+    bars("by-type", d.by_type, false, t);
+    bars("by-sub", d.by_subtype, true, t);
+    bars("by-county", d.by_county, false, t);
+    weeks(d.by_week, t);
+  } catch (e) {
+    $("privacy").textContent = t.error;
+  }
+}
+
+$("period").addEventListener("change", load);
+[["btn-en", "en"], ["btn-sw", "sw"]].forEach(([id, code]) => $(id).addEventListener("click", () => {
+  lang = code; try { localStorage.setItem("fh_lang", code); } catch (e) {} load();
+}));
+load();
+</script>
+</body>
+</html>

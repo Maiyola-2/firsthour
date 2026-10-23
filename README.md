@@ -40,6 +40,8 @@ In both cases, the loss was made worse by what happened *after*: confusion, dela
 | **Case tracker** | Saves who the victim reported to, the reference number and a follow-up date, then sends a reminder |
 | **Escalation guidance** | If nobody replies, shows where to go next (bank, then the Central Bank of Kenya; M-PESA, then the Central Bank; telecom, then the Communications Authority) |
 | **Erase my data** | `/deletemydata` permanently removes everything stored about the user |
+| **Anonymous sharing** | Optional. The victim can share only the type of incident, an optional county and the week, to help warn the community |
+| **Community dashboard** | A public web page (English and Swahili) showing anonymised trends: scam types, counties and weekly counts, with small groups hidden |
 
 ### Cases covered by the MVP
 
@@ -47,7 +49,7 @@ In both cases, the loss was made worse by what happened *after*: confusion, dela
 2. **Sent money to a scammer:** M-PESA or another mobile money service, bank transfer, or other payment
 3. **Hijacked account:** WhatsApp, social media or email taken over, often through a malicious link
 
-Planned later: SIM swap, fake loan app harassment, leaked ID, a WhatsApp interface, and a USSD/SMS interface for feature phones.
+Planned later: SIM swap, fake loan app harassment, leaked ID, a WhatsApp interface, a USSD/SMS interface for feature phones, and verified guidance for Airtel Money and individual banks.
 
 ## Project Status
 
@@ -57,7 +59,7 @@ Planned later: SIM swap, fake loan app harassment, leaked ID, a WhatsApp interfa
 - [x] Telegram bot
 - [x] Contact-warning generator
 - [x] Case tracker with reminders and escalation guidance
-- [ ] Community dashboard (anonymised)
+- [x] Community dashboard (anonymised)
 - [ ] User testing and evaluation
 
 ---
@@ -68,7 +70,7 @@ Planned later: SIM swap, fake loan app harassment, leaked ID, a WhatsApp interfa
 - **Database:** SQLite by default; MySQL supported through the `DATABASE_URL` setting
 - **Bot:** python-telegram-bot (with job queue for reminders)
 - **PDF:** fpdf2
-- **Planned:** React dashboard
+- **Dashboard:** plain HTML and JavaScript served by the API (no build step needed)
 
 ## Project Structure
 
@@ -76,6 +78,8 @@ Planned later: SIM swap, fake loan app harassment, leaked ID, a WhatsApp interfa
 backend/
   main.py            API: triage, evidence PDF, contact warning
   tracker.py         Case tracker, reminders data, escalation endpoint
+  community.py       Anonymous reports and privacy-protected statistics
+  seed_demo.py       Optional: labelled SYNTHETIC demo data for presentations
   evidence.py        PDF evidence report generator
   warn.py            Contact-warning message generator
   triage_data.json   Decision trees and action plans (English and Swahili)
@@ -83,7 +87,9 @@ backend/
   requirements.txt
 bot/
   bot.py             Telegram bot
-dashboard/           Community dashboard (planned)
+dashboard/
+  index.html         Community dashboard page, served at /dashboard
+tests/               Automated tests (API, privacy rules and the bot)
 docs/
   sources.md         Verified official sources and the date each was checked
 ```
@@ -129,6 +135,30 @@ python bot.py
 
 **5. Open your bot in Telegram** and send `/start`.
 
+**6. Open the community dashboard** at `http://127.0.0.1:8000/dashboard`. It stays empty until people share reports, because groups with fewer than 3 reports are hidden by design.
+
+For a presentation you can load clearly labelled **synthetic** demo data. It never mixes with real data and the page shows a DEMO DATA banner:
+
+```bash
+cd backend
+python seed_demo.py            # add demo data, then open /dashboard?demo=1
+python seed_demo.py --clear    # remove it
+```
+
+Always say that demo figures are synthetic. Never present them as real incidents.
+
+### Running the tests
+
+From the project root, with the virtual environment active:
+
+```bash
+python tests/test_tracker_api.py
+python tests/test_community_api.py
+python tests/test_bot.py
+```
+
+The tests use a temporary database and do not touch your real data or the Telegram network.
+
 ### Optional settings (backend/.env)
 
 ```
@@ -147,6 +177,7 @@ Victim data is sensitive, so FirstHour is built to collect as little as possible
 - **Evidence reports are never stored.** The PDF is generated in memory and sent straight back. Answers are dropped from memory as soon as the PDF is made.
 - **The tracker stores only:** the Telegram chat ID, case type, institution, an optional reference number, dates, status and language. No names, amounts, phone numbers or message text.
 - **Users can erase everything** at any time with `/deletemydata`.
+- **Community sharing is optional and anonymous.** Only the incident type, an optional county and the week (not the exact time) are stored, with no chat ID or any link back to the person. The dashboard hides every group smaller than 3 and merges small groups into an "Other" row, so no individual can be singled out. Figures show only what people chose to report, so they are indicative, not official statistics.
 - **Secrets stay out of the repository.** The bot token and database file are excluded by `.gitignore`.
 - **Logs avoid personal data.** Errors are logged by type, and the bot token is hidden.
 - The bot does **not** read call logs, SMS, contacts or anything else on the user's phone.
